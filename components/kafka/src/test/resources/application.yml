@@ -1,0 +1,32 @@
+stream:
+  channel:
+    # 接受
+    sourceQueue:
+      type: memory
+      capacity: 20000
+    # 发送
+    sinkQueue:
+      type: memory
+      capacity: 20000
+  source:
+    test1:
+      type: kafka
+      channel: sourceQueue
+      config:
+        "[bootstrap.servers]": 192.168.6.195:9093
+        "[group.id]": test1
+        topic: test-1
+    test2:
+      type: local
+      channel: sinkQueue
+  sink:
+    test1:
+      type: default
+      channel: sourceQueue
+      threads: 3
+    test2:
+      type: kafka
+      channel: sinkQueue
+      threads: 3
+      config:
+        "[bootstrap.servers]": 192.168.6.195:9093

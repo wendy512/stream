@@ -1,0 +1,37 @@
+stream:
+  channel:
+    # 接受
+    sourceQueue:
+      type: memory
+      capacity: 20000
+    # 发送
+    sinkQueue:
+      type: memory
+      capacity: 20000
+  source:
+    test1:
+      type: mqtt
+      channel: sourceQueue
+      config:
+        host: tcp://192.168.6.195:30584
+        topic: test/stream-1
+        qos: 1
+        username: admin
+        password: public
+    test2:
+      type: local
+      channel: sinkQueue
+  sink:
+    test1:
+      type: default
+      channel: sourceQueue
+      threads: 3
+    test2:
+      type: mqtt
+      channel: sinkQueue
+      threads: 2
+      config:
+        host: tcp://192.168.6.195:30584
+        qos: 1
+        username: admin
+        password: public
