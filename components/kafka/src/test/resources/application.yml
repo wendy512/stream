@@ -13,7 +13,7 @@ stream:
       type: kafka
       channel: sourceQueue
       config:
-        "[bootstrap.servers]": 192.168.6.195:9093
+        "[bootstrap.servers]": 127.0.0.1:9093
         "[group.id]": test1
         topic: test-1
     test2:
@@ -29,4 +29,4 @@ stream:
       channel: sinkQueue
       threads: 3
       config:
-        "[bootstrap.servers]": 192.168.6.195:9093
+        "[bootstrap.servers]": 127.0.0.1:9093

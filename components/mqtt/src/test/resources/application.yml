@@ -13,7 +13,7 @@ stream:
       type: mqtt
       channel: sourceQueue
       config:
-        host: tcp://192.168.6.195:30584
+        host: tcp://127.0.0.1:1883
         topic: test/stream-1
         qos: 1
         username: admin
@@ -31,7 +31,7 @@ stream:
       channel: sinkQueue
       threads: 2
       config:
-        host: tcp://192.168.6.195:30584
+        host: tcp://127.0.0.1:1883
         qos: 1
         username: admin
         password: public
