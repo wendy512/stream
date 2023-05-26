@@ -13,31 +13,28 @@
 
 package io.github.stream.test;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import org.springframework.stereotype.Component;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import io.github.stream.core.Consumer;
-import io.github.stream.core.Message;
-import io.github.stream.core.annotation.Sink;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 测试consumer
  * @author wendy512@yeah.net
- * @date 2023-05-22 17:17:53
+ * @date 2023-05-22 15:39:17
  * @since 1.0.0
  */
-@Sink("test1")
-@Component
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = TestApplication.class)
 @Slf4j
-public class MqttConsumer implements Consumer<String> {
+public class TestRabbitMqConsumer {
 
-    @Override
-    public void accept(List<Message<String>> messages) {
-        String threadName = Thread.currentThread().getName();
-        messages.forEach(m -> {
-            System.out.println(String.format("[%s] Received mqtt message %s", threadName, m.getPayload()));
-        });
+    @Test
+    public void testConsumer() throws Exception {
+        // sleep 保证消费完
+        TimeUnit.SECONDS.sleep(5);
     }
 }

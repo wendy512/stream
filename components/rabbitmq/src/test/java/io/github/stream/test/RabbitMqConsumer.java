@@ -28,16 +28,17 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2023-05-22 17:17:53
  * @since 1.0.0
  */
-@Sink("test1")
+@Sink("test2")
 @Component
 @Slf4j
-public class MqttConsumer implements Consumer<String> {
+public class RabbitMqConsumer implements Consumer<Object> {
 
     @Override
-    public void accept(List<Message<String>> messages) {
+    public void accept(List<Message<Object>> messages) {
         String threadName = Thread.currentThread().getName();
         messages.forEach(m -> {
-            System.out.println(String.format("[%s] Received mqtt message %s", threadName, m.getPayload()));
+            byte[] body = (byte[]) m.getPayload();
+            System.out.println(String.format("[%s] Received rabbitmq message %s", threadName, new String(body)));
         });
     }
 }

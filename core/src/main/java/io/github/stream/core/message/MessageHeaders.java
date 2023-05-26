@@ -87,6 +87,18 @@ public class MessageHeaders implements Map<String, Object>, Serializable {
         return MapUtils.getString(headers, key);
     }
 
+    public String getString(String key, String defaultValue) {
+        return MapUtils.getString(headers, key, defaultValue);
+    }
+
+    public boolean getBooleanValue(String key) {
+        return MapUtils.getBooleanValue(headers, key);
+    }
+
+    public boolean getBooleanValue(String key, boolean defaultValue) {
+        return MapUtils.getBooleanValue(headers, key, defaultValue);
+    }
+
     // Delegating Map implementation
 
     public boolean containsKey(Object key) {

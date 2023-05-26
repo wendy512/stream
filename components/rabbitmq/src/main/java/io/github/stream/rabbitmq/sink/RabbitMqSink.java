@@ -11,55 +11,45 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package io.github.stream.mqtt.sink;
+package io.github.stream.rabbitmq.sink;
 
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.properties.AbstractProperties;
 import io.github.stream.core.sink.AbstractSink;
-import io.github.stream.mqtt.MqttStateConfigure;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * mqtt 发送
+ * rabbitmq 发送
  * @author wendy512@yeah.net
- * @date 2023-05-23 14:55:53
+ * @date 2023-05-25 14:19:27
  * @since 1.0.0
  */
-@Slf4j
-public class MqttSink extends AbstractSink<String> {
+public class RabbitMqSink extends AbstractSink<Object> {
 
-    private MqttSender mqttSender;
+    private RabbitMqSender sender;
 
-    public MqttSink(int cacheSize) {
+    public RabbitMqSink(int cacheSize) {
         super(cacheSize);
     }
 
     @Override
     public void configure(AbstractProperties properties) {
-        this.mqttSender = MqttSender.getInstance(properties);
+        this.sender = RabbitMqSender.getInstance(properties);
     }
 
     @Override
-    public void startProcess(List<Message<String>> messages) {
-        for (Message<String> message : messages) {
-            String topic = message.getHeaders().getString(MqttStateConfigure.OPTIONS_TOPIC);
-            String payload = message.getPayload();
-            if (StringUtils.isBlank(topic)) {
-                log.error("Message {} , topic header is empty", payload);
-                continue;
+    public void startProcess(List<Message<Object>> messages) {
+        for (Message<Object> message : messages) {
+            if (null != message) {
+                sender.send(message);
             }
-
-            mqttSender.send(topic, payload);
         }
     }
 
     @Override
     public void stop() {
-        mqttSender.stop();
+        sender.stop();
         super.stop();
     }
 }

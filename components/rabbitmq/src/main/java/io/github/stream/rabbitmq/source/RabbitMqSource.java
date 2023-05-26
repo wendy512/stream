@@ -1,10 +1,32 @@
+/**
+ * Copyright wendy512@yeah.net
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ */
+
 package io.github.stream.rabbitmq.source;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.rabbitmq.client.*;
+
+import io.github.stream.core.Message;
+import io.github.stream.core.StreamException;
+import io.github.stream.core.message.MessageBuilder;
 import io.github.stream.core.properties.AbstractProperties;
 import io.github.stream.core.source.AbstractSource;
-import com.rabbitmq.client.ConnectionFactory;
+import io.github.stream.rabbitmq.RabbitMqStateConfigure;
 
 /**
  * rabbitMq 输入（消费）
@@ -14,37 +36,116 @@ import com.rabbitmq.client.ConnectionFactory;
  */
 public class RabbitMqSource extends AbstractSource {
 
+    private Connection connection;
+
+    private final RabbitMqStateConfigure stateConfigure = new RabbitMqStateConfigure();
+
+    private Map<String, Object> exchangeQueueBind;
+
+    private Channel channel;
+
     @Override
     public void configure(AbstractProperties properties) {
-        /*ConnectionFactory connectionFactory = createConnectionFactory(properties);
-        Connection connection = connectionFactory.newConnection();
-        Channel channel = connection.createChannel();*/
-        //channel.que
-    }
-
-    private ConnectionFactory createConnectionFactory(AbstractProperties properties) {
-        String host = properties.getString("host");
-        if (StringUtils.isBlank(host)) {
-            throw new IllegalArgumentException("RabbitMQ host cannot be empty");
+        stateConfigure.configure(properties);
+        // 初始化连接
+        try {
+            this.connection = stateConfigure.newConnection();
+        } catch (Exception e) {
+            throw new StreamException(e);
         }
 
-        Integer port = properties.getInteger("port");
-        if (null == port) {
-            throw new IllegalArgumentException("RabbitMQ port cannot be empty");
+        this.exchangeQueueBind = (Map<String, Object>) properties.get("exchangeQueueBind");
+    }
+
+    @Override
+    public void start() {
+        try {
+            this.channel = connection.createChannel();
+        } catch (IOException e) {
+            throw new StreamException(e);
         }
 
-        String username = properties.getString("username");
-        String password = properties.getString("password");
-        String virtualHost = properties.getString("virtualHost", "/");
-        int connectionTimeout = properties.getInt("connectionTimeout", 60000);
+        // exchange 和 queue进行绑定
+        exchangeQueueBind.forEach((exchange,info) -> {
 
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost(host);
-        connectionFactory.setPort(port);
-        connectionFactory.setUsername(username);
-        connectionFactory.setPassword(password);
-        connectionFactory.setConnectionTimeout(connectionTimeout);
-        connectionFactory.setVirtualHost(virtualHost);
-        return connectionFactory;
+            Map infoMap = (Map) info;
+            String queue = MapUtils.getString(infoMap, "queue");
+            if (StringUtils.isBlank(queue)) {
+                throw new IllegalArgumentException(String.format("Exchange %s queue is empty"));
+            }
+            String routingKey = MapUtils.getString(infoMap, "routingKey");
+            String[] queues = queue.split(",");
+
+            boolean autoAck = MapUtils.getBooleanValue(infoMap, "autoAck", true);
+
+            try {
+                channel.exchangeDeclare(exchange, BuiltinExchangeType.FANOUT);
+
+
+                for (String q : queues) {
+                    channel.queueDeclare(q, true, false, false, null);
+                    channel.queueBind(q, exchange, routingKey);
+                }
+            } catch (IOException e) {
+                throw new StreamException(e);
+            }
+
+            try {
+                for (String q : queues) {
+                    RabbitMqPollingConsumer consumer = new RabbitMqPollingConsumer(channel, autoAck);
+                    channel.basicConsume(q, autoAck, consumer);
+                }
+            } catch (IOException e) {
+                throw new StreamException(e);
+            }
+        });
+
+        super.start();
     }
+
+    @Override
+    public void stop() {
+        try {
+            channel.close();
+            connection.close();
+        } catch (Exception e) {
+            throw new StreamException(e);
+        }
+        super.stop();
+    }
+
+    private class RabbitMqPollingConsumer extends DefaultConsumer {
+
+        private boolean autoAck;
+
+        public RabbitMqPollingConsumer(Channel channel, boolean autoAck) {
+            super(channel);
+            this.autoAck = autoAck;
+        }
+
+        public RabbitMqPollingConsumer(Channel channel) {
+            super(channel);
+        }
+
+        @Override
+        public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+            Message message = MessageBuilder.withPayload(body)
+                    .setHeader("consumerTag", consumerTag)
+                    .setHeader("exchange", envelope.getExchange())
+                    .setHeader("deliveryTag", envelope.getDeliveryTag())
+                    .setHeader("routingKey", envelope.getRoutingKey())
+                    .setHeader("isRedeliver", envelope.isRedeliver())
+                    .setHeader("properties", properties)
+                    .build();
+            try {
+                getChannelProcessor().send(message);
+            } finally {
+                if (!autoAck) {
+                    channel.basicAck(envelope.getDeliveryTag(), false);
+                }
+            }
+
+        }
+    }
+
 }

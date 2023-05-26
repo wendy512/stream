@@ -1,35 +1,42 @@
 stream:
   channel:
-    # 接受
+    # Receive channel
     sourceQueue:
       type: memory
       capacity: 20000
-    # 发送
+    # Sending channel
     sinkQueue:
       type: memory
       capacity: 20000
+  # Source
   source:
     test1:
+      # Received type specified as mqtt
       type: mqtt
       channel: sourceQueue
+      # Configure mqtt
       config:
         host: tcp://127.0.0.1:1883
         topic: test/stream-1
         qos: 1
         username: admin
         password: public
+    # Send to accept via local channel
     test2:
       type: local
       channel: sinkQueue
+  # Target
   sink:
+    # Received specified type as local channel
     test1:
       type: default
       channel: sourceQueue
-      threads: 3
+      threads: 1
     test2:
       type: mqtt
       channel: sinkQueue
-      threads: 2
+      threads: 1
+      # Configure mqtt
       config:
         host: tcp://127.0.0.1:1883
         qos: 1

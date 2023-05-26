@@ -1,0 +1,45 @@
+stream:
+  channel:
+    # Sending channel
+    sinkQueue:
+      type: memory
+      capacity: 20000
+    # Receive channel
+    sourceQueue:
+      type: memory
+      capacity: 20000
+  source:
+    # Send to accept via local channel
+    test1:
+      type: local
+      channel: sinkQueue
+    # Received type specified as rabbitmq
+    test2:
+      type: rabbitmq
+      channel: sourceQueue
+      # Configure rabbitmq info
+      config:
+        host: 127.0.0.1
+        port: 5672
+        username: admin
+        password: admin
+        exchangeQueueBind:
+          test-1:
+            queue: test-queue-1
+            routingKey: ""
+
+  sink:
+    test1:
+      type: rabbitmq
+      channel: sinkQueue
+      threads: 1
+      # Configure rabbitmq info
+      config:
+        host: 127.0.0.1
+        port: 5672
+        username: admin
+        password: admin
+    # Received specified type as local channel
+    test2:
+      type: default
+      channel: sourceQueue

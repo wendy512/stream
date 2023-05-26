@@ -19,7 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.hyst.stream.core.*;
+import org.apache.commons.lang3.StringUtils;
+
+import io.github.stream.core.*;
 import io.github.stream.core.channel.ChannelProcessor;
 import io.github.stream.core.channel.ChannelType;
 import io.github.stream.core.channel.LoadBalancingChannelSelector;
@@ -30,7 +32,6 @@ import io.github.stream.core.properties.SourceProperties;
 import io.github.stream.core.sink.DefaultSinkProcessor;
 import io.github.stream.core.sink.SinkType;
 import io.github.stream.core.source.SourceType;
-import io.github.stream.core.*;
 
 /**
  * 加载stream配置默认实现
@@ -76,23 +77,31 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             return;
         }
 
-        sourceMap.forEach((name, properties) -> {
+        for (Map.Entry<String, SourceProperties> entry : sourceMap.entrySet()) {
+            String name = entry.getKey();
+            SourceProperties properties = entry.getValue();
+
             ComponentWithClassName sourceClassName = null;
             try {
                 sourceClassName = SourceType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new StreamException("Not found source type " + properties.getType());
+                throw new StreamException("source " + name + "Not found  type " + properties.getType());
             }
 
             ChannelSelector channelSelector =
                 new LoadBalancingChannelSelector(LoadBalancingChannelSelector.Policy.ROUND_ROBIN);
-            List<Channel> channels = configuration.getChannels().get(properties.getChannel());
+            String channel = properties.getChannel();
+            if (StringUtils.isBlank(channel)) {
+                throw new StreamException("source " + name + " channel cannot be empty ");
+            }
+
+            List<Channel> channels = configuration.getChannels().get(channel);
             if (null == channels) {
-                throw new StreamException("Not found sink channel " + properties.getChannel());
+                throw new StreamException("source " + name + "Not found channel " + channel);
             }
             channelSelector.addChannel(channels);
             ChannelProcessor channelProcessor = new ChannelProcessor(channelSelector);
-            configuration.addChannelProcessor(properties.getChannel(), channelProcessor);
+            configuration.addChannelProcessor(channel, channelProcessor);
 
             try {
                 Class<?> clazz = Class.forName(sourceClassName.getClassName());
@@ -103,7 +112,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             } catch (Exception e) {
                 throw new StreamException(e);
             }
-        });
+        }
     }
 
     private void loadSinkAndChannel(MaterializedConfiguration configuration, CoreProperties coreProperties) {
@@ -113,12 +122,15 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             return;
         }
 
-        sinkMap.forEach((name, properties) -> {
+        for (Map.Entry<String, SinkProperties> entry : sinkMap.entrySet()) {
+            String name = entry.getKey();
+            SinkProperties properties = entry.getValue();
+
             ComponentWithClassName sinkClassName = null;
             try {
                 sinkClassName = SinkType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new StreamException("Not found sink type " + properties.getType());
+                throw new StreamException("sink " + name + " Not found type " + properties.getType());
             }
 
             Constructor<?> sinkConstructor;
@@ -167,6 +179,6 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 SinkRunner sinkRunner = new SinkRunner(sinkProcessor, properties.getInterval(), "sink-runner-" + i);
                 configuration.addSinkRunner(name, sinkRunner);
             }
-        });
+        }
     }
 }

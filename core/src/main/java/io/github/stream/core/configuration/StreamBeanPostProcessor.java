@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
-import io.github.stream.core.Consumer;
-import io.github.stream.core.StreamException;
-import io.github.stream.core.annotation.Channel;
-import io.github.stream.core.annotation.Sink;
-import io.github.stream.core.properties.CoreProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -31,7 +26,12 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.ReflectionUtils;
 
+import io.github.stream.core.Consumer;
+import io.github.stream.core.StreamException;
+import io.github.stream.core.annotation.Channel;
+import io.github.stream.core.annotation.Sink;
 import io.github.stream.core.channel.ChannelProcessor;
+import io.github.stream.core.properties.CoreProperties;
 
 /**
  * bean 装配之前
@@ -47,9 +47,13 @@ public class StreamBeanPostProcessor implements BeanPostProcessor {
 
     private final AtomicBoolean initialized = new AtomicBoolean(false);
 
+    private MaterializedConfiguration configuration;
+
     public StreamBeanPostProcessor(ConfigurableApplicationContext context, CoreProperties properties) {
         this.context = context;
         this.properties = properties;
+        ConfigurationProvider configurationProvider = getConfigurationProvider();
+        this.configuration = configurationProvider.getConfiguration();
     }
 
     @Override
@@ -59,10 +63,7 @@ public class StreamBeanPostProcessor implements BeanPostProcessor {
             return bean;
         }
 
-        ConfigurationProvider configurationProvider = getConfigurationProvider();
-        MaterializedConfiguration configuration = configurationProvider.getConfiguration();
         autoWriteChannelProcessor(bean, configuration);
-
         bindConsumerToSink(bean, configuration);
         return bean;
     }

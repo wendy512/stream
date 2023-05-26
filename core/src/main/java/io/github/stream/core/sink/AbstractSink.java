@@ -43,10 +43,6 @@ public abstract class AbstractSink<T> extends AbstractLifecycleAware implements 
         this.cacheSize = cacheSize;
     }
 
-    protected AbstractSink() {
-        this.cacheSize = 100;
-    }
-
     @Override
     public int process() {
         int i = 0;

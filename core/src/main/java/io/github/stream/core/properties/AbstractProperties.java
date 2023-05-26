@@ -15,6 +15,10 @@ import java.util.Map;
 public class AbstractProperties {
     private Map config;
 
+    public Object get(String key) {
+        return config.get(key);
+    }
+
     public String getString(String key) {
         return MapUtils.getString(config, key);
     }

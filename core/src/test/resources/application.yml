@@ -11,4 +11,4 @@ stream:
     test:
       type: default
       channel: localQueue
-      threads: 3
+      threads: 1
