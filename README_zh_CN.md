@@ -23,6 +23,10 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 </dependency>
 ``` 
 
+## 如何使用
+
+[参考Wiki](https://github.com/wendy512/stream/wiki)
+
 ## 示例
 * [本地队列](https://github.com/wendy512/stream/tree/master/samples/local-sample)
 * [Kafka](https://github.com/wendy512/stream/tree/master/samples/kafka-sample)

@@ -24,6 +24,10 @@ If you use Maven, you just need to add the following dependency in pom.xml:
 </dependency>
 ``` 
 
+## How to use
+
+[Reference Wiki](https://github.com/wendy512/stream/wiki)
+
 ## Examples
 * [Local queue](https://github.com/wendy512/stream/tree/master/samples/local-sample)
 * [Kafka](https://github.com/wendy512/stream/tree/master/samples/kafka-sample)
