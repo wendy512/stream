@@ -35,7 +35,7 @@ import org.springframework.core.annotation.Order;
 @EnableConfigurationProperties(CoreProperties.class)
 @Configuration
 @Import({StreamBeanPostProcessor.class, SpringUtil.class})
-@ComponentScan("com.hyst.stream")
+@ComponentScan("io.github.stream")
 public class StreamAutoConfiguration {
 
     @Bean

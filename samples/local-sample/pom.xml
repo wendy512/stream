@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>examples</artifactId>
+        <artifactId>samples</artifactId>
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <description>本地消息发送及接受的示例</description>
-    <artifactId>stream-local-example</artifactId>
+    <artifactId>stream-local-sample</artifactId>
 
     <dependencies>
         <dependency>

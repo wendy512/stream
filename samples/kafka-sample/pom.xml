@@ -5,15 +5,17 @@
     <parent>
         <artifactId>samples</artifactId>
         <groupId>io.github.wendy512</groupId>
-        <version>1.0.0</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kafka-sample</artifactId>
+    <description>Kafka发送及接受的示例</description>
+    <artifactId>stream-kafka-sample</artifactId>
 
-    <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
-
+    <dependencies>
+        <dependency>
+            <groupId>io.github.wendy512</groupId>
+            <artifactId>stream-kafka</artifactId>
+        </dependency>
+    </dependencies>
 </project>

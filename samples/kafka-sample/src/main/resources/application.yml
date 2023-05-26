@@ -1,0 +1,48 @@
+stream:
+  # 数据通道
+  channel:
+    # 接受通道名称
+    sourceQueue:
+      # 通道类型，目前支持：memory
+      type: memory
+      # 队列容量
+      capacity: 20000
+    # 发送通道名称
+    sinkQueue:
+      type: memory
+      # 队列容量
+      capacity: 20000
+  # 消息源配置
+  source:
+    test:
+      # 消息源类型，目前支持：local、mqtt、kafka、rabbitmq
+      type: kafka
+      # 关联通道
+      channel: sourceQueue
+      # 配置Kafka
+      config:
+        "[bootstrap.servers]": 127.0.0.1:9092
+        "[group.id]": test1
+        topic: stream
+    # 接受本地通道的数据，然后发送到Kafka Broker
+    test2:
+      type: local
+      channel: sinkQueue
+  # 消息目标配置
+  sink:
+    # 接受处理
+    test:
+      # 消息目标类型，目前支持：default、mqtt、kafka、rabbitmq
+      type: default
+      # 关联通道
+      channel: sourceQueue
+      # 目标由几个固定线程去处理
+      threads: 1
+    # 发送处理
+    test2:
+      type: kafka
+      channel: sinkQueue
+      threads: 1
+      # 配置MQTT
+      config:
+        "[bootstrap.servers]": 127.0.0.1:9092
