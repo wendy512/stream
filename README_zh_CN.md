@@ -1,0 +1,32 @@
+# Stream
+中文 | [English](README.md)
+## 概述
+Stream异步消息高性能处理框架，类似go chan，多线程异步处理消息，支持批处理消息。
+
+## 功能特性
+- 异步多线程（固定线程），支持指定线程数
+- 支持Kafka、MQTT、RabbitMQ消息源并支持拓展
+- 消息处理支持训和随机两种处理方式
+- 消息处理支持拦截器
+- 支持SpringBoot
+
+## 需要
+编译需要 JDK 8 及以上、Maven 3.2.5 及以上。
+
+## 集成
+如果你使用 Maven，你只需要在 pom.xml 中添加下面的依赖：
+```xml  
+<dependency>
+    <groupId>io.github</groupId>
+    <artifactId>stream-core</artifactId>
+    <version>1.0.0</version>
+</dependency>
+``` 
+
+## 开源许可
+Stream 基于 [Apache License 2.0](./LICENSE) 协议，Stream 依赖了一些第三方组件，它们的开源协议也为 Apache License 2.0。
+
+## 联系方式
+
+- 邮箱：<wendy512@yeah.net>
+- QQ：214566407
