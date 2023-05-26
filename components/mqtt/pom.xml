@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <description>mqtt stream组件</description>
+    <name>Stream MQTT component</name>
     <artifactId>stream-mqtt</artifactId>
 
     <dependencies>
