@@ -1,6 +1,10 @@
 # Stream
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.wendy512/stream/badge.svg)](https://search.maven.org/search?q=g:io.github.wendy512%20AND%20stream)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 English | [中文](README_zh_CN.md)
+
 ## Overview
 Stream asynchronous message high-performance processing framework, similar to go chan, multi-threaded asynchronous processing of messages, supports batch processing of messages.
 

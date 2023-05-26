@@ -1,5 +1,10 @@
 # Stream
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.wendy512/stream/badge.svg)](https://search.maven.org/search?q=g:io.github.wendy512%20AND%20stream)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 中文 | [English](README.md)
+
 ## 概述
 Stream异步消息高性能处理框架，类似go chan，多线程异步处理消息，支持批处理消息。
 
