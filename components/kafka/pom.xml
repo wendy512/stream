@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <name>Stream kafka component</name>
     <artifactId>stream-kafka</artifactId>
 
     <dependencies>
