@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github</groupId>
+    <groupId>io.github.wendy512</groupId>
     <artifactId>stream</artifactId>
     <version>${revision}</version>
     <modules>
@@ -16,7 +16,6 @@
     </modules>
     <packaging>pom</packaging>
 
-    <name>Streaming Framework</name>
     <description>
         Streaming processing framework, source, channel, sink, support mqtt, Kafka and other components
     </description>
@@ -58,7 +57,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.github</groupId>
+                <groupId>io.github.wendy512</groupId>
                 <artifactId>bom</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>

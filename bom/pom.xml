@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github</groupId>
+    <groupId>io.github.wendy512</groupId>
     <artifactId>bom</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
@@ -30,8 +30,23 @@
         <dependencies>
             <!-- stream -->
             <dependency>
-                <groupId>io.github</groupId>
+                <groupId>io.github.wendy512</groupId>
                 <artifactId>stream-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wendy512</groupId>
+                <artifactId>stream-mqtt</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wendy512</groupId>
+                <artifactId>stream-kafka</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wendy512</groupId>
+                <artifactId>stream-rabbitmq</artifactId>
                 <version>${revision}</version>
             </dependency>
             <!-- logback -->
