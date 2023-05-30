@@ -22,7 +22,7 @@ Compilation requires JDK 8 and above, Maven 3.2.5 and above.
 If you use Maven, you just need to add the following dependency in pom.xml:
 ```xml  
 <dependency>
-    <groupId>io.github</groupId>
+    <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
     <version>1.0.0</version>
 </dependency>

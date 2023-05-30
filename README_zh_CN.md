@@ -22,7 +22,7 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 如果你使用 Maven，你只需要在 pom.xml 中添加下面的依赖：
 ```xml  
 <dependency>
-    <groupId>io.github</groupId>
+    <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
     <version>1.0.0</version>
 </dependency>
