@@ -158,20 +158,25 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 throw new StreamException(e);
             }
 
+            Sink sink;
+            try {
+                sink = (Sink)sinkConstructor.newInstance();
+            } catch (Exception e) {
+                throw new StreamException(e);
+            }
+            sink.configure(properties);
+            configuration.addSink(name, sink);
+
             for (int i = 1; i <= properties.getThreads(); i++) {
-                SinkProcessor sinkProcessor = new DefaultSinkProcessor();
+                SinkProcessor sinkProcessor = new DefaultSinkProcessor(properties.getCacheSize());
 
                 try {
-                    Sink sink = (Sink)sinkConstructor.newInstance(properties.getCacheSize());
-
                     Channel channel = (Channel)channelConstructor.newInstance(channelProperties.getCapacity());
                     channel.configure(channelProperties);
-                    configuration.addChannel(channelName, channel);
 
-                    sink.setChannel(channel);
-                    sink.configure(properties);
-                    configuration.addSink(name, sink);
+                    sinkProcessor.setChannel(channel);
                     sinkProcessor.setSinks(Arrays.asList(sink));
+                    configuration.addChannel(channelName, channel);
                 } catch (Exception e) {
                     throw new StreamException(e);
                 }

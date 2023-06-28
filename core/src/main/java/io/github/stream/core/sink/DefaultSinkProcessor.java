@@ -13,8 +13,10 @@
 
 package io.github.stream.core.sink;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import io.github.stream.core.Message;
 import io.github.stream.core.Sink;
 
 /**
@@ -25,12 +27,32 @@ import io.github.stream.core.Sink;
  */
 public class DefaultSinkProcessor<T> extends AbstractSinkProcessor<T> {
 
+    public DefaultSinkProcessor(int cacheSize) {
+        super(cacheSize);
+    }
+
     @Override
     public int process() {
-        List<Sink<T>> sinks = getSinks();
+        int i = 0;
+        final List<Message<T>> caches = new ArrayList<>();
+
+        // 尝试着一次从队列中获取尽量多的元素且不超过cacheSize
+        while (++i <= cacheSize) {
+            Message<T> e = getChannel().poll();
+            if (null == e) {
+                break;
+            }
+            caches.add(e);
+        }
+
         int processCount = 0;
+        if (!caches.isEmpty()) {
+            processCount = caches.size();
+        }
+
+        List<Sink<T>> sinks = getSinks();
         for (Sink<T> sink : sinks) {
-            processCount += sink.process();
+            sink.process(caches);
         }
         return processCount;
     }

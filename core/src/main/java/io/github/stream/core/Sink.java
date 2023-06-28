@@ -13,6 +13,7 @@
 
 package io.github.stream.core;
 
+import java.util.List;
 import java.util.Set;
 
 import io.github.stream.core.lifecycle.LifecycleAware;
@@ -25,13 +26,9 @@ import io.github.stream.core.lifecycle.LifecycleAware;
  */
 public interface Sink<T> extends LifecycleAware, Configurable {
 
-    void setChannel(Channel<T> channel);
-
-    Channel<T> getChannel();
-
     void addConsumer(Consumer<T> consumer);
 
     Set<Consumer<T>> getConsumers();
 
-    int process();
+    void process(List<Message<T>> messages);
 }

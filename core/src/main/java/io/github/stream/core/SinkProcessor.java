@@ -28,4 +28,8 @@ public interface SinkProcessor<T> extends LifecycleAware {
     int process();
 
     void setSinks(List<Sink<T>> sinks);
+
+    void setChannel(Channel<T> channel);
+
+    Channel<T> getChannel();
 }

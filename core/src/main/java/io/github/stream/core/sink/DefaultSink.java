@@ -30,12 +30,8 @@ import java.util.Set;
 @Slf4j
 public class DefaultSink<T> extends AbstractSink<T> {
 
-    public DefaultSink(int cacheSize) {
-        super(cacheSize);
-    }
-
     @Override
-    public void startProcess(List<Message<T>> messages) {
+    public void process(List<Message<T>> messages) {
         Set<Consumer<T>> consumers = getConsumers();
         for (Consumer<T> consumer : consumers) {
             try {

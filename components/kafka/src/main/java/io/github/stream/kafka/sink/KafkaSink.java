@@ -14,8 +14,13 @@
 package io.github.stream.kafka.sink;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.properties.AbstractProperties;
@@ -31,25 +36,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class KafkaSink extends AbstractSink<Object> {
 
-    private KafkaSender kafkaSender;
-
-    public KafkaSink(int cacheSize) {
-        super(cacheSize);
-    }
+    private KafkaProducer kafkaProducer;
 
     @Override
     public void configure(AbstractProperties properties) {
-        this.kafkaSender = KafkaSender.getInstance(properties);
+        Map config = properties.getConfig();
+        if (null == config) {
+            throw new IllegalArgumentException("Kafka sink config cannot empty");
+        }
+        config.putIfAbsent(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        config.putIfAbsent(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        this.kafkaProducer = new KafkaProducer(config);
     }
 
     @Override
     public void stop() {
-        kafkaSender.stop();
+        kafkaProducer.close();
         super.stop();
     }
 
     @Override
-    public void startProcess(List<Message<Object>> messages) {
+    public void process(List<Message<Object>> messages) {
         for (Message<Object> message : messages) {
             String topic = message.getHeaders().getString("topic");
             Object payload = message.getPayload();
@@ -58,7 +65,12 @@ public class KafkaSink extends AbstractSink<Object> {
                 continue;
             }
 
-            kafkaSender.send(topic, payload);
+            send(topic, payload);
         }
+    }
+
+    public void send(String topic, Object payload) {
+        ProducerRecord record = new ProducerRecord(topic, payload);
+        kafkaProducer.send(record);
     }
 }

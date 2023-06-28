@@ -13,6 +13,7 @@
 
 package io.github.stream.core.sink;
 
+import io.github.stream.core.Channel;
 import io.github.stream.core.Sink;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import io.github.stream.core.SinkProcessor;
@@ -29,6 +30,14 @@ import java.util.List;
 public abstract class AbstractSinkProcessor<T> extends AbstractLifecycleAware implements SinkProcessor<T> {
 
     private List<Sink<T>> sinks = Collections.emptyList();
+
+    private Channel<T> channel;
+
+    protected final int cacheSize;
+
+    protected AbstractSinkProcessor(int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
 
     @Override
     public void setSinks(List<Sink<T>> sinks) {
@@ -49,5 +58,15 @@ public abstract class AbstractSinkProcessor<T> extends AbstractLifecycleAware im
     public void stop() {
         sinks.forEach(Sink::stop);
         super.stop();
+    }
+
+    @Override
+    public void setChannel(Channel<T> channel) {
+        this.channel = channel;
+    }
+
+    @Override
+    public Channel<T> getChannel() {
+        return this.channel;
     }
 }

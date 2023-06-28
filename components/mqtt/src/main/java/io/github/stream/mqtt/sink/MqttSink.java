@@ -13,9 +13,12 @@
 
 package io.github.stream.mqtt.sink;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.properties.AbstractProperties;
@@ -32,19 +35,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MqttSink extends AbstractSink<String> {
 
-    private MqttSender mqttSender;
-
-    public MqttSink(int cacheSize) {
-        super(cacheSize);
-    }
+    private MqttStateConfigure stateConfigure;
 
     @Override
     public void configure(AbstractProperties properties) {
-        this.mqttSender = MqttSender.getInstance(properties);
+        this.stateConfigure = new MqttStateConfigure();
+        this.stateConfigure.configure(properties, false);
     }
 
     @Override
-    public void startProcess(List<Message<String>> messages) {
+    public void process(List<Message<String>> messages) {
         for (Message<String> message : messages) {
             String topic = message.getHeaders().getString(MqttStateConfigure.OPTIONS_TOPIC);
             String payload = message.getPayload();
@@ -53,13 +53,28 @@ public class MqttSink extends AbstractSink<String> {
                 continue;
             }
 
-            mqttSender.send(topic, payload);
+            send(topic, payload);
+        }
+    }
+
+    public void send(String topic, String payload) {
+        MqttMessage mqttMessage = new MqttMessage();
+        mqttMessage.setQos(stateConfigure.getQos());
+        mqttMessage.setPayload(payload.getBytes(StandardCharsets.UTF_8));
+
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Send message {} to mqtt topic {}", payload, topic);
+            }
+            stateConfigure.getClient().publish(topic, mqttMessage);
+        } catch (MqttException e) {
+            log.error("Send message to mqtt error", e);
         }
     }
 
     @Override
     public void stop() {
-        mqttSender.stop();
+        stateConfigure.stop();
         super.stop();
     }
 }

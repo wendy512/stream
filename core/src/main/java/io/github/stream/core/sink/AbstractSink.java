@@ -13,12 +13,10 @@
 
 package io.github.stream.core.sink;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.github.stream.core.Channel;
 import io.github.stream.core.Consumer;
 import io.github.stream.core.Message;
 import io.github.stream.core.Sink;
@@ -33,54 +31,12 @@ import io.github.stream.core.properties.AbstractProperties;
  */
 public abstract class AbstractSink<T> extends AbstractLifecycleAware implements Sink<T> {
 
-    private Channel<T> channel;
-
     private Set<Consumer<T>> consumers = new LinkedHashSet<>();
 
-    protected final int cacheSize;
-
-    protected AbstractSink(int cacheSize) {
-        this.cacheSize = cacheSize;
-    }
-
-    @Override
-    public int process() {
-        int i = 0;
-        final List<Message<T>> caches = new ArrayList<>();
-
-        // 尝试着一次从队列中获取尽量多的元素且不超过cacheSize
-        while (++i <= cacheSize) {
-            Message<T> e = getChannel().poll();
-            if (null == e) {
-                break;
-            }
-            caches.add(e);
-        }
-
-        int processCount = 0;
-        if (!caches.isEmpty()) {
-            processCount = caches.size();
-            // 交给业务handler处理数据
-            startProcess(caches);
-            caches.clear();
-        }
-        return processCount;
-    }
+    public abstract void process(List<Message<T>> messages);
 
     @Override
     public void configure(AbstractProperties properties) {}
-
-    public abstract void startProcess(List<Message<T>> messages);
-
-    @Override
-    public void setChannel(Channel<T> channel) {
-        this.channel = channel;
-    }
-
-    @Override
-    public Channel<T> getChannel() {
-        return this.channel;
-    }
 
     @Override
     public void addConsumer(Consumer<T> consumer) {
