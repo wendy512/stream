@@ -13,10 +13,12 @@
 
 package io.github.stream.test;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.annotation.Channel;
@@ -24,14 +26,12 @@ import io.github.stream.core.channel.ChannelProcessor;
 import io.github.stream.core.message.MessageBuilder;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author wendy512@yeah.net
  * @date 2023-05-22 15:39:17
  * @since 1.0.0
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApplication.class)
 @Slf4j
 public class TestMqttSink {

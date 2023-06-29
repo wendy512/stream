@@ -62,6 +62,7 @@ public class SinkRunner<T> extends AbstractLifecycleAware {
                 }
             }
         }
+        processor.stop();
         super.stop();
     }
 

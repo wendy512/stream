@@ -81,7 +81,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             String name = entry.getKey();
             SourceProperties properties = entry.getValue();
 
-            ComponentWithClassName sourceClassName = null;
+            ComponentWithClassName sourceClassName;
             try {
                 sourceClassName = SourceType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
@@ -126,24 +126,16 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             String name = entry.getKey();
             SinkProperties properties = entry.getValue();
 
-            ComponentWithClassName sinkClassName = null;
+            ComponentWithClassName sinkClassName;
             try {
                 sinkClassName = SinkType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new StreamException("sink " + name + " Not found type " + properties.getType());
             }
 
-            Constructor<?> sinkConstructor;
-            try {
-                Class<?> clazz = Class.forName(sinkClassName.getClassName());
-                sinkConstructor = clazz.getConstructor(int.class);
-            } catch (Exception e) {
-                throw new StreamException(e);
-            }
-
             String channelName = properties.getChannel();
             ChannelProperties channelProperties = channelMap.get(channelName);
-            ComponentWithClassName channelClassName = null;
+            ComponentWithClassName channelClassName;
 
             try {
                 channelClassName = ChannelType.valueOf(channelProperties.getType().toUpperCase());
@@ -151,9 +143,17 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 throw new StreamException("Not found channel type " + channelProperties.getType());
             }
 
-            Constructor<?> channelConstructor = null;
+            Constructor<?> channelConstructor;
             try {
                 channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class);
+            } catch (Exception e) {
+                throw new StreamException(e);
+            }
+
+            Constructor<?> sinkConstructor;
+            try {
+                Class<?> clazz = Class.forName(sinkClassName.getClassName());
+                sinkConstructor = clazz.getConstructor();
             } catch (Exception e) {
                 throw new StreamException(e);
             }
