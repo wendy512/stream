@@ -14,7 +14,7 @@
     <url>https://github.com/wendy512/stream</url>
 
     <properties>
-        <revision>1.0.0</revision>
+        <revision>1.0.1</revision>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <!-- logback -->
@@ -208,5 +208,5 @@
         <developerConnection>scm:git:git@github.com:wendy512/stream.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-    
+
 </project>

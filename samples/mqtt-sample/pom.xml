@@ -7,6 +7,7 @@
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
+    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <name>Stream MQTT sample</name>

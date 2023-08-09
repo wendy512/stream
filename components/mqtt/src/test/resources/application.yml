@@ -4,10 +4,6 @@ stream:
     sourceQueue:
       type: memory
       capacity: 20000
-    # Sending channel
-    sinkQueue:
-      type: memory
-      capacity: 20000
   # Source
   source:
     test1:
@@ -16,15 +12,11 @@ stream:
       channel: sourceQueue
       # Configure mqtt
       config:
-        host: tcp://127.0.0.1:1883
-        topic: test/stream-1
+        host: tcp://192.168.6.195:9883
+        topic: $HYST/v1/test01/node/service
         qos: 1
-        username: admin
-        password: public
-    # Send to accept via local channel
-    test2:
-      type: local
-      channel: sinkQueue
+        username: test01
+        password: hy123456
   # Target
   sink:
     # Received specified type as local channel
@@ -32,13 +24,3 @@ stream:
       type: default
       channel: sourceQueue
       threads: 1
-    test2:
-      type: mqtt
-      channel: sinkQueue
-      threads: 1
-      # Configure mqtt
-      config:
-        host: tcp://127.0.0.1:1883
-        qos: 1
-        username: admin
-        password: public
