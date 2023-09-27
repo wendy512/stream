@@ -13,10 +13,10 @@
 
 package io.github.stream.core.message;
 
-import io.github.stream.core.Message;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import io.github.stream.core.Message;
 
 /**
  * message builder
@@ -28,17 +28,15 @@ public final class MessageBuilder<T> {
 
     private final T payload;
 
-    private final MessageHeaders headers;
+    private final Map<String,Object> header;
 
-    private final Map<String,Object> header = new HashMap<>();
-
-    private MessageBuilder(T payload, MessageHeaders headers) {
+    private MessageBuilder(T payload, Map<String, Object> header) {
         this.payload = payload;
-        this.headers = headers;
+        this.header = header;
     }
 
     public static <T> MessageBuilder<T> withPayload(T payload) {
-        return new MessageBuilder<T>(payload, null);
+        return new MessageBuilder<T>(payload, new HashMap<>());
     }
 
     public MessageBuilder<T> setHeader(String headerName, Object headerValue) {

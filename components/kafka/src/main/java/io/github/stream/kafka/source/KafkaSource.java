@@ -130,6 +130,9 @@ public class KafkaSource extends AbstractSource {
                     ConsumerRecord record = (ConsumerRecord) iterator.next();
                     Message message = MessageBuilder.withPayload(record.value())
                             .setHeader("topic", record.topic())
+                            .setHeader("offset", record.offset())
+                            .setHeader("partition", record.partition())
+                            .setHeader("key", record.key())
                             .setHeader("timestamp", record.timestamp())
                             .build();
 

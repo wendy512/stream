@@ -24,6 +24,6 @@ import lombok.Data;
  */
 @Data
 public class ChannelProperties extends AbstractProperties {
-    private int capacity;
+    private int capacity = 1000;
     private String type = "memory";
 }
