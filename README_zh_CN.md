@@ -24,7 +24,7 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ``` 
 

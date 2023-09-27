@@ -24,7 +24,7 @@ If you use Maven, you just need to add the following dependency in pom.xml:
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ``` 
 
