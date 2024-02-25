@@ -98,7 +98,7 @@ public class KafkaSource extends AbstractSource {
                     log.debug("Waiting for runner thread to exit");
                     runnerThread.join(500);
                 } catch (InterruptedException e) {
-                    log.debug("Interrupted while waiting for runner thread to exit. Exception follows.",
+                    log.error("Interrupted while waiting for runner thread to exit. Exception follows.",
                             e);
                 }
             }

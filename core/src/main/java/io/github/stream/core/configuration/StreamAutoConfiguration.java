@@ -13,10 +13,6 @@
 
 package io.github.stream.core.configuration;
 
-import io.github.stream.core.ApplicationRunner;
-import io.github.stream.core.StreamApplicationRunner;
-import io.github.stream.core.properties.CoreProperties;
-import io.github.stream.core.utils.SpringUtil;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,6 +20,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+
+import io.github.stream.core.ApplicationRunner;
+import io.github.stream.core.StreamApplicationRunner;
+import io.github.stream.core.channel.ChannelContext;
+import io.github.stream.core.properties.CoreProperties;
+import io.github.stream.core.utils.SpringUtil;
 
 /**
  * 自动装配
@@ -48,4 +50,8 @@ public class StreamAutoConfiguration {
         return runner;
     }
 
+    @Bean
+    public ChannelContext channelContext(ConfigurationProvider configurationProvider) {
+        return new ChannelContext(configurationProvider);
+    }
 }

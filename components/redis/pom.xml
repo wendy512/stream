@@ -3,30 +3,24 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stream</artifactId>
+        <artifactId>stream-components</artifactId>
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
+    <packaging>jar</packaging>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>pom</packaging>
 
-    <name>Stream components</name>
-
-    <modules>
-        <module>mqtt</module>
-        <module>kafka</module>
-        <module>rabbitmq</module>
-        <module>redis</module>
-    </modules>
-
-    <artifactId>stream-components</artifactId>
+    <name>Stream redis component</name>
+    <artifactId>stream-redis</artifactId>
 
     <dependencies>
-        <!-- test -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>io.github.wendy512</groupId>
+            <artifactId>stream-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
         </dependency>
     </dependencies>
 </project>

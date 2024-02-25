@@ -22,7 +22,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
-import io.github.stream.core.channel.ChannelProcessor;
 import io.github.stream.core.message.MessageBuilder;
 import io.github.stream.core.properties.AbstractProperties;
 import io.github.stream.core.source.AbstractSource;
@@ -50,8 +49,7 @@ public class MqttSource extends AbstractSource<String> {
         // mqtt订阅
         for (String topic : stateConfigure.getTopics()) {
             try {
-                stateConfigure.getClient().subscribe(topic, stateConfigure.getQos(),
-                    new MqttMessageListener(getChannelProcessor()));
+                stateConfigure.getClient().subscribe(topic, stateConfigure.getQos(), new MqttMessageListener());
             } catch (MqttException e) {
                 throw new StreamException(e);
             }
@@ -75,20 +73,13 @@ public class MqttSource extends AbstractSource<String> {
         super.stop();
     }
 
-    @Slf4j
-    public static class MqttMessageListener implements IMqttMessageListener {
-
-        private final ChannelProcessor<String> channelProcessor;
-
-        public MqttMessageListener(ChannelProcessor<String> channelProcessor) {
-            this.channelProcessor = channelProcessor;
-        }
+    private class MqttMessageListener implements IMqttMessageListener {
 
         @Override
         public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
             String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
-            Message<String> message = MessageBuilder.<String>withPayload(payload).setHeader(MqttStateConfigure.OPTIONS_TOPIC, topic).build();
-            channelProcessor.send(message);
+            Message<String> message = MessageBuilder.withPayload(payload).setHeader(MqttStateConfigure.OPTIONS_TOPIC, topic).build();
+            getChannelProcessor().send(message);
         }
     }
 }

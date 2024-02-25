@@ -15,7 +15,7 @@
     </modules>
     <packaging>pom</packaging>
 
-    <name>Stream Project</name>
+    <name>Stream project</name>
     <description>
         Streaming processing framework, source, channel, sink, support mqtt, Kafka and other components
     </description>

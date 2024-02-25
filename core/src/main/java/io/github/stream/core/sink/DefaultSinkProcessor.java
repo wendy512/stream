@@ -45,9 +45,11 @@ public class DefaultSinkProcessor<T> extends AbstractSinkProcessor<T> {
             caches.add(e);
         }
 
-        List<Sink<T>> sinks = getSinks();
-        for (Sink<T> sink : sinks) {
-            sink.process(caches);
+        if (!caches.isEmpty()) {
+            List<Sink<T>> sinks = getSinks();
+            for (Sink<T> sink : sinks) {
+                sink.process(caches);
+            }
         }
         return caches.size();
     }

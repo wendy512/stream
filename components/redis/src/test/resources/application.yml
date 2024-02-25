@@ -1,0 +1,32 @@
+stream:
+  channel:
+    sourceQueue:
+      type: memory
+      capacity: 20000
+    sinkQueue:
+      type: memory
+      capacity: 20000
+  source:
+    test1:
+      type: redis
+      channel: sourceQueue
+      config:
+        address: redis://192.168.6.195:6379
+        password: hy123456
+        database: 2
+        topic: test-1
+    test2:
+      type: local
+      channel: sinkQueue
+  sink:
+    test1:
+      channel: sourceQueue
+      threads: 1
+    test2:
+      type: redis
+      channel: sinkQueue
+      threads: 1
+      config:
+        address: redis://192.168.6.195:6379
+        password: hy123456
+        database: 2

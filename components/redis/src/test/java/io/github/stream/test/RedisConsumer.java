@@ -11,31 +11,33 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package io.github.stream.core.sink;
+package io.github.stream.test;
 
-import io.github.stream.core.configuration.ComponentWithClassName;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import io.github.stream.core.Consumer;
+import io.github.stream.core.Message;
+import io.github.stream.core.annotation.Sink;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * sink类型
- *
+ * 测试consumer
  * @author wendy512@yeah.net
- * @date 2023-05-19 17:10:58
+ * @date 2023-05-22 17:17:53
  * @since 1.0.0
  */
-public enum SinkType implements ComponentWithClassName {
-
-    DEFAULT("io.github.stream.core.sink.DefaultSink"), MQTT("io.github.stream.mqtt.sink.MqttSink"),
-    KAFKA("io.github.stream.kafka.sink.KafkaSink"), RABBITMQ("io.github.stream.rabbitmq.sink.RabbitMqSink"),
-    REDIS("io.github.stream.redis.sink.RedisStreamSink");
-
-    private final String className;
-
-    SinkType(String className) {
-        this.className = className;
-    }
+@Sink("test1")
+@Component
+@Slf4j
+public class RedisConsumer implements Consumer<Object> {
 
     @Override
-    public String getClassName() {
-        return className;
+    public void accept(List<Message<Object>> messages) {
+        String threadName = Thread.currentThread().getName();
+        messages.forEach(m -> {
+            System.out.println(String.format("[%s] Received redis message %s", threadName, m.getPayload()));
+        });
     }
 }

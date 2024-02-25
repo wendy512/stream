@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class SinkProperties extends AbstractProperties {
 
-    private String type;
+    private String type = "default";
 
     private int threads = 1;
 
