@@ -43,4 +43,3 @@ Stream is based on the [Apache License 2.0](./LICENSE) agreement, and Stream rel
 ## Contact
 
 - Email：<wendy512@yeah.net>
-- QQ：214566407

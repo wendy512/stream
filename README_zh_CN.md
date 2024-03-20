@@ -44,4 +44,3 @@ Stream 基于 [Apache License 2.0](./LICENSE) 协议，Stream 依赖了一些第
 ## 联系方式
 
 - 邮箱：<wendy512@yeah.net>
-- QQ：214566407
