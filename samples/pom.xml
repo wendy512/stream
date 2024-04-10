@@ -10,15 +10,16 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>Stream samples</name>
-    
+
     <modules>
         <module>local-sample</module>
         <module>mqtt-sample</module>
         <module>kafka-sample</module>
         <module>rabbitmq-sample</module>
+        <module>pulsar-sample</module>
     </modules>
 
     <artifactId>stream-samples</artifactId>
 
-    
+
 </project>
