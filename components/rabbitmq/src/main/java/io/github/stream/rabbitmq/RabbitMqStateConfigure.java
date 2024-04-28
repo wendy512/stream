@@ -13,14 +13,16 @@
 
 package io.github.stream.rabbitmq;
 
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import io.github.stream.core.Configurable;
-import io.github.stream.core.properties.AbstractProperties;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+import io.github.stream.core.Configurable;
+import io.github.stream.core.properties.BaseProperties;
 
 /**
  * connection状态管理
@@ -33,7 +35,7 @@ public class RabbitMqStateConfigure implements Configurable {
     private ConnectionFactory connectionFactory;
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         this.connectionFactory = createConnectionFactory(properties);
     }
 
@@ -41,7 +43,7 @@ public class RabbitMqStateConfigure implements Configurable {
         return connectionFactory.newConnection();
     }
 
-    private ConnectionFactory createConnectionFactory(AbstractProperties properties) {
+    private ConnectionFactory createConnectionFactory(BaseProperties properties) {
         String host = properties.getString("host");
         if (StringUtils.isBlank(host)) {
             throw new IllegalArgumentException("RabbitMQ host cannot be empty");

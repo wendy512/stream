@@ -23,7 +23,7 @@ import io.github.stream.core.interceptor.InterceptableChannel;
 import io.github.stream.core.interceptor.Interceptor;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import io.github.stream.core.lifecycle.LifecycleState;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 提取公共方法抽象类
@@ -51,7 +51,7 @@ public abstract class AbstractChannel<T> extends AbstractLifecycleAware implemen
     }
 
     @Override
-    public void configure(AbstractProperties properties) {}
+    public void configure(BaseProperties properties) {}
 
     protected abstract void doPut(Message<T> message);
 

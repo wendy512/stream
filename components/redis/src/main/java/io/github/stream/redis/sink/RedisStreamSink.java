@@ -8,8 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RTopic;
 
 import io.github.stream.core.Message;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.sink.AbstractSink;
+import io.github.stream.redis.Constants;
 import io.github.stream.redis.RedissonStateConfigure;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,17 +28,16 @@ public class RedisStreamSink extends AbstractSink<Object> {
     private Map<String, RTopic> rTopics = new ConcurrentHashMap<>();
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         stateConfigure.configure(properties);
     }
 
     @Override
     public void process(List<Message<Object>> messages) {
         for (Message message : messages) {
-            String topic = message.getHeaders().getString("topic");
+            String topic = message.getHeaders().getString(Constants.TOPIC_KEY);
             Object payload = message.getPayload();
             if (StringUtils.isBlank(topic)) {
-                log.error("Message {} , topic header is empty", payload);
                 continue;
             }
 

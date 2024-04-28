@@ -21,7 +21,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import io.github.stream.core.Message;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.sink.AbstractSink;
 import io.github.stream.mqtt.MqttStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class MqttSink extends AbstractSink<String> {
     private MqttStateConfigure stateConfigure;
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) throws Exception {
         this.stateConfigure = new MqttStateConfigure();
         this.stateConfigure.configure(properties, false);
     }
@@ -49,7 +49,6 @@ public class MqttSink extends AbstractSink<String> {
             String topic = message.getHeaders().getString(MqttStateConfigure.OPTIONS_TOPIC);
             String payload = message.getPayload();
             if (StringUtils.isBlank(topic)) {
-                log.error("Message {} , topic header is empty", payload);
                 continue;
             }
 

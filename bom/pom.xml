@@ -32,7 +32,6 @@
         <kafka.version>3.2.0</kafka.version>
         <amqp-client.version>5.16.0</amqp-client.version>
         <redisson.version>3.16.6</redisson.version>
-        <pulsar-client.version>2.11.0</pulsar-client.version>
     </properties>
 
     <dependencyManagement>
@@ -56,11 +55,6 @@
             <dependency>
                 <groupId>io.github.wendy512</groupId>
                 <artifactId>stream-rabbitmq</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-pulsar</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -123,11 +117,6 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.pulsar</groupId>
-                <artifactId>pulsar-client</artifactId>
-                <version>${pulsar-client.version}</version>
             </dependency>
             <!-- Test -->
             <dependency>

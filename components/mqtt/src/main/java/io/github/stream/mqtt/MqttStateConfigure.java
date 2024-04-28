@@ -13,15 +13,31 @@
 
 package io.github.stream.mqtt;
 
-import io.github.stream.core.Configurable;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.util.List;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.Assert;
+import org.springframework.util.ResourceUtils;
 
+import io.github.stream.core.Configurable;
 import io.github.stream.core.StreamException;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.utils.UUID;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,11 +69,12 @@ public class MqttStateConfigure implements Configurable {
 
     private int qos;
 
-    public void configure(AbstractProperties properties) {
+    @Override
+    public void configure(BaseProperties properties) throws Exception {
         this.configure(properties, true);
     }
 
-    public void configure(AbstractProperties properties, boolean resolveTopic) {
+    public void configure(BaseProperties properties, boolean resolveTopic) throws Exception {
         MqttConnectOptions options = createOptions(properties);
 
         String host = properties.getString(OPTIONS_HOST);
@@ -66,11 +83,7 @@ public class MqttStateConfigure implements Configurable {
         }
 
         if (resolveTopic) {
-            String topic = properties.getString(OPTIONS_TOPIC);
-            if (StringUtils.isBlank(topic)) {
-                throw new IllegalArgumentException("MQTT topic cannot be empty");
-            }
-            this.topics = topic.split(",");
+            resolveTopic(properties);
         }
 
         String clientId = properties.getString(OPTIONS_CLIENT_ID);
@@ -90,7 +103,20 @@ public class MqttStateConfigure implements Configurable {
         }
     }
 
-    private MqttConnectOptions createOptions(AbstractProperties properties) {
+    private void resolveTopic(BaseProperties properties) {
+        Object topicValue = properties.get(OPTIONS_TOPIC);
+        if (topicValue instanceof List) {
+            List<String> topicList = (List<String>) topicValue;
+            Assert.notEmpty(topicList, "MQTT topic cannot be empty");
+            this.topics = topicList.toArray(new String[topicList.size()]);
+        } else {
+            String topic = (String) topicValue;
+            Assert.hasText(topic, "MQTT topic cannot be empty");
+            this.topics = topic.split(",");
+        }
+    }
+
+    private MqttConnectOptions createOptions(BaseProperties properties) throws Exception {
         int connectionTimeout =
                 properties.getInt(OPTIONS_CONNECT_TIMEOUT, MqttConnectOptions.CONNECTION_TIMEOUT_DEFAULT);
         int keepAlive = properties.getInt( OPTIONS_KEEP_ALIVE_INTERVAL,
@@ -113,6 +139,8 @@ public class MqttStateConfigure implements Configurable {
             options.setPassword(password.toCharArray());
         }
 
+        setSSLOptions(properties, options);
+        // SSL配置
         return options;
     }
 
@@ -137,5 +165,40 @@ public class MqttStateConfigure implements Configurable {
 
     public int getQos() {
         return qos;
+    }
+
+    private void setSSLOptions(BaseProperties properties, MqttConnectOptions options)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
+        BaseProperties ssl = properties.getProperties("ssl");
+        if (null != ssl && ssl.getBooleanValue("enabled")) {
+            String keyStorePath = ssl.getString("key-store");
+            if (StringUtils.isBlank(keyStorePath)) {
+                throw new IllegalArgumentException("MQTT ssl key-store cannot be empty");
+            }
+
+            // 加载信任库
+            KeyStore trustStore = KeyStore.getInstance(ssl.getString("key-store-type", "JKS"));
+            InputStream keyStoreStream;
+            String keyStorePassword = ssl.getString("key-store-password", "");
+
+            if (keyStorePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
+                String path = keyStorePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());
+                ClassPathResource resource = new ClassPathResource(path);
+                keyStoreStream = resource.getInputStream();
+            } else {
+                keyStoreStream = new FileInputStream(keyStorePath);
+            }
+
+            trustStore.load(keyStoreStream, keyStorePassword.toCharArray());
+            // 创建信任管理器工厂
+            TrustManagerFactory trustManagerFactory =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(trustStore);
+
+            // 创建 SSL 上下文
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
+            options.setSocketFactory(sslContext.getSocketFactory());
+        }
     }
 }

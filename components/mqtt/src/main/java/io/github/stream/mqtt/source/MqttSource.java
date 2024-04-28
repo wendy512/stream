@@ -23,7 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.mqtt.MqttStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class MqttSource extends AbstractSource<String> {
     private final MqttStateConfigure stateConfigure = new MqttStateConfigure();
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) throws Exception {
         stateConfigure.configure(properties);
     }
 
@@ -78,7 +78,11 @@ public class MqttSource extends AbstractSource<String> {
         @Override
         public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
             String payload = new String(mqttMessage.getPayload(), StandardCharsets.UTF_8);
-            Message<String> message = MessageBuilder.withPayload(payload).setHeader(MqttStateConfigure.OPTIONS_TOPIC, topic).build();
+            Message<String> message = MessageBuilder.withPayload(payload)
+                    .setHeader(MqttStateConfigure.OPTIONS_TOPIC, topic)
+                    .setHeader(MqttStateConfigure.OPTIONS_QOS, mqttMessage.getQos())
+                    .setHeader("id", mqttMessage.getId())
+                    .build();
             getChannelProcessor().send(message);
         }
     }

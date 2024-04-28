@@ -1,9 +1,10 @@
 package io.github.stream.core.properties;
 
-import lombok.Data;
+import java.util.Map;
+
 import org.apache.commons.collections4.MapUtils;
 
-import java.util.Map;
+import lombok.Data;
 
 /**
  * 配置抽象
@@ -12,7 +13,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @Data
-public class AbstractProperties {
+public class BaseProperties {
     private Map config;
 
     public Object get(String key) {
@@ -31,7 +32,7 @@ public class AbstractProperties {
         return MapUtils.getBooleanValue(config, key);
     }
 
-    public boolean getBooleanValue(String key, Boolean defaultValue) {
+    public boolean getBooleanValue(String key, boolean defaultValue) {
         return MapUtils.getBooleanValue(config, key, defaultValue);
     }
 
@@ -51,4 +52,13 @@ public class AbstractProperties {
         return MapUtils.getInteger(config, key, defaultValue);
     }
 
+    public BaseProperties getProperties(String key) {
+        Map childConfig = MapUtils.getMap(this.config, key);
+        if (null == childConfig) {
+            return null;
+        }
+        BaseProperties properties = new BaseProperties();
+        properties.setConfig(childConfig);
+        return properties;
+    }
 }

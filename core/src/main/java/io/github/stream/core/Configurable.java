@@ -1,6 +1,6 @@
 package io.github.stream.core;
 
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 配置接口
@@ -14,5 +14,5 @@ public interface Configurable {
      * 统一配置入口
      * @param properties
      */
-    void configure(AbstractProperties properties);
+    void configure(BaseProperties properties) throws Exception;
 }

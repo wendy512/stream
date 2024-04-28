@@ -1,18 +1,17 @@
 package io.github.stream.redis.source;
 
-import io.github.stream.core.Message;
-import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.redis.Constants;
-import org.redisson.api.RTopic;
-
-import io.github.stream.core.properties.AbstractProperties;
-import io.github.stream.core.source.AbstractSource;
-import io.github.stream.redis.RedissonStateConfigure;
-import org.redisson.api.listener.MessageListener;
-import org.springframework.util.Assert;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.redisson.api.RTopic;
+import org.redisson.api.listener.MessageListener;
+
+import io.github.stream.core.Message;
+import io.github.stream.core.message.MessageBuilder;
+import io.github.stream.core.properties.BaseProperties;
+import io.github.stream.core.source.AbstractSource;
+import io.github.stream.redis.Constants;
+import io.github.stream.redis.RedissonStateConfigure;
 
 /**
  * redis stream 队列消费
@@ -29,16 +28,14 @@ public class RedisStreamSource extends AbstractSource {
     private List<RTopic> rTopics;
 
     @Override
-    public void configure(AbstractProperties properties) {
-        stateConfigure.configure(properties);
-        String topic = properties.getString(Constants.TOPIC_KEY);
-        Assert.hasText(topic, "topic cannot be empty");
-        this.topics = topic.split(",");
-        this.rTopics = new ArrayList<>(this.topics.length);
+    public void configure(BaseProperties properties) {
+        this.stateConfigure.configure(properties);
+        this.topics = stateConfigure.resolveTopic(properties);
     }
 
     @Override
     public void start() {
+        this.rTopics = new ArrayList<>(this.topics.length);
         for (String topic : topics) {
             RTopic rTopic = stateConfigure.getClient().getTopic(topic);
             rTopics.add(rTopic);

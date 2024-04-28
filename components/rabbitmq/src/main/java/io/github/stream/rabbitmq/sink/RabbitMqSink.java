@@ -33,7 +33,7 @@ import com.rabbitmq.client.Connection;
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
 import io.github.stream.core.message.MessageHeaders;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.sink.AbstractSink;
 import io.github.stream.rabbitmq.RabbitMqStateConfigure;
 
@@ -56,7 +56,7 @@ public class RabbitMqSink extends AbstractSink<Object> {
     private final ReentrantLock lock = new ReentrantLock(true);
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         this.stateConfigure = new RabbitMqStateConfigure();
         this.stateConfigure.configure(properties);
         try {

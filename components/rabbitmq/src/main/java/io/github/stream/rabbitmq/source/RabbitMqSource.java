@@ -24,7 +24,7 @@ import com.rabbitmq.client.*;
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.rabbitmq.RabbitMqStateConfigure;
 
@@ -45,7 +45,7 @@ public class RabbitMqSource extends AbstractSource {
     private Channel channel;
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         stateConfigure.configure(properties);
         // 初始化连接
         try {

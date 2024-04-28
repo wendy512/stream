@@ -1,7 +1,9 @@
 package io.github.stream.redis;
 
-import io.github.stream.core.Configurable;
-import io.github.stream.core.properties.AbstractProperties;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -9,9 +11,8 @@ import org.redisson.config.BaseConfig;
 import org.redisson.config.Config;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import io.github.stream.core.Configurable;
+import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 连接配置
@@ -24,7 +25,7 @@ public class RedissonStateConfigure implements Configurable {
     private RedissonClient client;
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         String mode = properties.getString("mode", Constants.MODE_SINGLE);
         String address = properties.getString("address");
         Assert.hasText(address, "address cannot be empty");
@@ -64,5 +65,18 @@ public class RedissonStateConfigure implements Configurable {
 
     public RedissonClient getClient() {
         return this.client;
+    }
+
+    public String[] resolveTopic(BaseProperties properties) {
+        Object topicValue = properties.get(Constants.TOPIC_KEY);
+        if (topicValue instanceof List) {
+            List<String> topicList = (List<String>) topicValue;
+            Assert.notEmpty(topicList, "redis topic cannot be empty");
+            return topicList.toArray(new String[topicList.size()]);
+        } else {
+            String topic = (String) topicValue;
+            Assert.hasText(topic, "redis topic cannot be empty");
+            return topic.split(",");
+        }
     }
 }

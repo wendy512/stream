@@ -30,7 +30,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import io.github.stream.core.AbstractAutoRunnable;
 import io.github.stream.core.Message;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,7 +56,7 @@ public class KafkaSource extends AbstractSource {
     private boolean autoCommit;
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         String topic = properties.getString("topic");
         if (StringUtils.isBlank(topic)) {
             throw new IllegalArgumentException("Kafka topic is empty");
@@ -123,7 +123,7 @@ public class KafkaSource extends AbstractSource {
             subscribe();
 
             while (isRunning()) {
-                ConsumerRecords<String,String> records = kafkaConsumer.poll(Duration.ofSeconds(1));
+                ConsumerRecords records = kafkaConsumer.poll(Duration.ofSeconds(1));
                 Iterator iterator = records.iterator();
 
                 while (iterator.hasNext()) {

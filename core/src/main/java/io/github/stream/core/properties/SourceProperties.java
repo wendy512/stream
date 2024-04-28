@@ -22,7 +22,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class SourceProperties extends AbstractProperties {
+public class SourceProperties extends BaseProperties {
     private String type;
     private String channel;
 }

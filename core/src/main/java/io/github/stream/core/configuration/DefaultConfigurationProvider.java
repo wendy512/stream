@@ -161,10 +161,10 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             Sink sink;
             try {
                 sink = (Sink)sinkConstructor.newInstance();
+                sink.configure(properties);
             } catch (Exception e) {
                 throw new StreamException(e);
             }
-            sink.configure(properties);
             configuration.addSink(name, sink);
 
             for (int i = 1; i <= properties.getThreads(); i++) {
