@@ -1,0 +1,63 @@
+stream:
+  # 数据通道
+  channel:
+    # 接受通道名称
+    sourceQueue:
+      # 通道类型，目前支持：memory
+      type: memory
+      # 队列容量
+      capacity: 20000
+    # 发送通道名称
+    sinkQueue:
+      type: memory
+      # 队列容量
+      capacity: 20000
+  # Source
+  source:
+    test2:
+      type: local
+      channel: sinkQueue
+    test:
+      # Received type specified as pulsar
+      type: pulsar
+      channel: sourceQueue
+      # Configure mqtt
+      config:
+        client:
+          serviceUrl: http://pulsar-v3.dev.test.local
+          authParams: eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ5dW1jaGluYS1wdWxzYXItYWRtaW4ifQ.FQrfBUcUUksz2wVeIpY0cvjZQzZyhfv1-PjbZN2TjH_VBqzSPyTi3Gkfgugluj0p6xNa-XHbEvRMAB2Np8--4RmDMlwhYVchb7hsmzYHjsvhiVpg2fz1ILVX-BSVutn-3TE7pxhtRSU9Uf-T5eD_8FcKQFBmmqxYyR9jToEBZ3_HT5_TW3ccGRefnX6n7uXUjYeS8-cC4xZUWEGHlYfMAHXHi9y6gnzKRKr4poGp6SnuCgaPLLXFYzCdzR1s2Pv1lSpPkYcmKt_qixjC1fkW-1IKul8wtDbNKnNcaGdPjqaxf3rQemo2mC2IIFnpj77kEzUs4DBxxNk7vkKA_anIqg
+          authPluginClassName: org.apache.pulsar.client.impl.auth.AuthenticationToken
+        consumer:
+          topicNames: ["persistent://public/default/user.consumer.test1"]
+          topicsPattern:
+          subscriptionName: "my-test1"
+          subscriptionType: exclusive
+          receiverQueueSize: 1000
+          readCompacted: false
+          subscriptionInitialPosition: latest
+  # Target
+  sink:
+    # 接受处理
+    test:
+      # 消息目标类型，目前支持：default、mqtt、kafka、rabbitmq
+      type: default
+      # 关联通道
+      channel: sourceQueue
+      # 目标由几个固定线程去处理
+      threads: 1
+    # 发送处理
+    test2:
+      type: pulsar
+      channel: sinkQueue
+      threads: 1
+      # 配置MQTT
+      config:
+        client:
+          serviceUrl: http://pulsar-v3.dev.test.local
+          authParams: eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ5dW1jaGluYS1wdWxzYXItYWRtaW4ifQ.FQrfBUcUUksz2wVeIpY0cvjZQzZyhfv1-PjbZN2TjH_VBqzSPyTi3Gkfgugluj0p6xNa-XHbEvRMAB2Np8--4RmDMlwhYVchb7hsmzYHjsvhiVpg2fz1ILVX-BSVutn-3TE7pxhtRSU9Uf-T5eD_8FcKQFBmmqxYyR9jToEBZ3_HT5_TW3ccGRefnX6n7uXUjYeS8-cC4xZUWEGHlYfMAHXHi9y6gnzKRKr4poGp6SnuCgaPLLXFYzCdzR1s2Pv1lSpPkYcmKt_qixjC1fkW-1IKul8wtDbNKnNcaGdPjqaxf3rQemo2mC2IIFnpj77kEzUs4DBxxNk7vkKA_anIqg
+          authPluginClassName: org.apache.pulsar.client.impl.auth.AuthenticationToken
+        producer:
+          topicName: user.consumer.test1
+          producerName: test-producer
+          sendTimeoutMs: 30000
+          blockIfQueueFull: false
