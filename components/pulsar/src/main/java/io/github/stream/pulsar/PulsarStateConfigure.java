@@ -1,7 +1,7 @@
 package io.github.stream.pulsar;
 
 import io.github.stream.core.Configurable;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 
@@ -19,7 +19,7 @@ public class PulsarStateConfigure implements Configurable {
 
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         builder = createPulsarClientBuilder(properties);
     }
 
@@ -28,7 +28,7 @@ public class PulsarStateConfigure implements Configurable {
     }
 
     @SuppressWarnings("unchecked")
-    private ClientBuilder createPulsarClientBuilder(AbstractProperties properties) {
+    private ClientBuilder createPulsarClientBuilder(BaseProperties properties) {
         Map<String, Object> config = properties.getConfig();
         if (null == config) {
             throw new IllegalArgumentException("pulsar sink config cannot empty");

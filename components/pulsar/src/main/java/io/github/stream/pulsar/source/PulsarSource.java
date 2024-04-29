@@ -2,7 +2,7 @@ package io.github.stream.pulsar.source;
 
 import io.github.stream.core.AbstractAutoRunnable;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.pulsar.PulsarStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.*;
 import org.springframework.util.CollectionUtils;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -36,12 +35,12 @@ public class PulsarSource  extends AbstractSource<String> {
 
 
     @Override
-    public void configure(AbstractProperties properties) {
+    public void configure(BaseProperties properties) {
         pulsarStateConfigure.configure(properties);
         try {
             pulsarClient = pulsarStateConfigure.newPulsarClient();
             initPulsarConsumer(properties);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -90,7 +89,7 @@ public class PulsarSource  extends AbstractSource<String> {
     }
 
     @SuppressWarnings("unchecked")
-    private void initPulsarConsumer(AbstractProperties properties) {
+    private void initPulsarConsumer(BaseProperties properties) {
         Map<String, Object> config = properties.getConfig();
         Map<String, Object> consumerConfig = (Map<String, Object>) config.get("consumer");
         if (null == consumerConfig) {

@@ -1,7 +1,7 @@
 package io.github.stream.pulsar.sink;
 
 import io.github.stream.core.Message;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.sink.AbstractSink;
 import io.github.stream.pulsar.PulsarStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.shade.org.apache.avro.data.Json;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -31,18 +30,19 @@ public class PulsarSink extends AbstractSink<Object> {
 
 
     @Override
-    public void configure(AbstractProperties properties) {
-        pulsarStateConfigure.configure(properties);
+    public void configure(BaseProperties properties) {
+
         try {
+            pulsarStateConfigure.configure(properties);
             pulsarClient = pulsarStateConfigure.newPulsarClient();
             initPulsarProducer(properties);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void initPulsarProducer(AbstractProperties properties) {
+    private void initPulsarProducer(BaseProperties properties) {
         Map<String, Object> config = properties.getConfig();
         Map<String, Object> producerConfig = (Map<String, Object>) config.get("producer");
         if (null == producerConfig) {

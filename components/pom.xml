@@ -17,6 +17,7 @@
         <module>kafka</module>
         <module>rabbitmq</module>
         <module>redis</module>
+        <module>pulsar</module>
     </modules>
 
     <artifactId>stream-components</artifactId>

@@ -11,6 +11,7 @@
         <module>bom</module>
         <module>core</module>
         <module>components</module>
+        <module>samples</module>
     </modules>
     <packaging>pom</packaging>
 
