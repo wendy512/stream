@@ -22,6 +22,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import io.github.stream.core.Configurable;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.properties.BaseProperties;
 
 /**
@@ -35,15 +36,16 @@ public class RabbitMqStateConfigure implements Configurable {
     private ConnectionFactory connectionFactory;
 
     @Override
-    public void configure(BaseProperties properties) {
-        this.connectionFactory = createConnectionFactory(properties);
+    public void configure(ConfigContext context) {
+        this.connectionFactory = createConnectionFactory(context);
     }
 
     public Connection newConnection() throws IOException, TimeoutException {
         return connectionFactory.newConnection();
     }
 
-    private ConnectionFactory createConnectionFactory(BaseProperties properties) {
+    private ConnectionFactory createConnectionFactory(ConfigContext context) {
+        BaseProperties properties = context.getInstance();
         String host = properties.getString("host");
         if (StringUtils.isBlank(host)) {
             throw new IllegalArgumentException("RabbitMQ host cannot be empty");
@@ -67,8 +69,5 @@ public class RabbitMqStateConfigure implements Configurable {
         connectionFactory.setConnectionTimeout(connectionTimeout);
         connectionFactory.setVirtualHost(virtualHost);
         return connectionFactory;
-    }
-
-    public void stop() {
     }
 }

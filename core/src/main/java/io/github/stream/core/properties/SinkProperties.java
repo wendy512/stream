@@ -13,6 +13,8 @@
 
 package io.github.stream.core.properties;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
@@ -22,7 +24,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class SinkProperties extends BaseProperties {
+public class SinkProperties {
 
     private String type = "default";
 
@@ -34,4 +36,7 @@ public class SinkProperties extends BaseProperties {
 
     private int interval = 50;
 
+    private String instanceName;
+
+    private Map<String, Object> config;
 }

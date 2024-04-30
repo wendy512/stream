@@ -21,7 +21,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import io.github.stream.core.Message;
-import io.github.stream.core.properties.BaseProperties;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.sink.AbstractSink;
 import io.github.stream.mqtt.MqttStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +38,9 @@ public class MqttSink extends AbstractSink<String> {
     private MqttStateConfigure stateConfigure;
 
     @Override
-    public void configure(BaseProperties properties) throws Exception {
+    public void configure(ConfigContext context) throws Exception {
         this.stateConfigure = new MqttStateConfigure();
-        this.stateConfigure.configure(properties, false);
+        this.stateConfigure.configure(context, false);
     }
 
     @Override

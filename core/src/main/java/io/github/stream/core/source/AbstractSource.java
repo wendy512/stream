@@ -15,8 +15,8 @@ package io.github.stream.core.source;
 
 import io.github.stream.core.Source;
 import io.github.stream.core.channel.ChannelProcessor;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
-import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 抽象source
@@ -39,6 +39,6 @@ public abstract class AbstractSource<T> extends AbstractLifecycleAware implement
     }
 
     @Override
-    public void configure(BaseProperties properties) throws Exception {}
+    public void configure(ConfigContext context) throws Exception {}
 
 }

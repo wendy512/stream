@@ -20,8 +20,8 @@ import java.util.Set;
 import io.github.stream.core.Consumer;
 import io.github.stream.core.Message;
 import io.github.stream.core.Sink;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
-import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 抽象的
@@ -37,7 +37,7 @@ public abstract class AbstractSink<T> extends AbstractLifecycleAware implements 
     public abstract void process(List<Message<T>> messages);
 
     @Override
-    public void configure(BaseProperties properties) throws Exception{}
+    public void configure(ConfigContext context) throws Exception{}
 
     @Override
     public void addConsumer(Consumer<T> consumer) {

@@ -1,12 +1,13 @@
 package io.github.stream.pulsar;
 
-import io.github.stream.core.Configurable;
-import io.github.stream.core.properties.AbstractProperties;
+import java.io.IOException;
+import java.util.Map;
+
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 
-import java.io.IOException;
-import java.util.Map;
+import io.github.stream.core.Configurable;
+import io.github.stream.core.configuration.ConfigContext;
 
 /**
  * pulsar配置加载
@@ -19,8 +20,8 @@ public class PulsarStateConfigure implements Configurable {
 
 
     @Override
-    public void configure(AbstractProperties properties) {
-        builder = createPulsarClientBuilder(properties);
+    public void configure(ConfigContext context) {
+        builder = createPulsarClientBuilder(context);
     }
 
     public PulsarClient newPulsarClient() throws IOException {
@@ -28,12 +29,12 @@ public class PulsarStateConfigure implements Configurable {
     }
 
     @SuppressWarnings("unchecked")
-    private ClientBuilder createPulsarClientBuilder(AbstractProperties properties) {
-        Map<String, Object> config = properties.getConfig();
+    private ClientBuilder createPulsarClientBuilder(ConfigContext context) {
+        Map<String, Object> config = context.getInstance().getOriginal();
         if (null == config) {
             throw new IllegalArgumentException("pulsar sink config cannot empty");
         }
-        Map<String, Object> clientConfig = (Map<String, Object>) config.get("client");
+        Map<String, Object> clientConfig = context.getInstance().getOriginal();
         return PulsarClient.builder().loadConf(clientConfig);
     }
 }

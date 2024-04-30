@@ -14,7 +14,7 @@
     <url>https://github.com/wendy512/stream</url>
 
     <properties>
-        <revision>1.0.1</revision>
+        <revision>1.0.2</revision>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
@@ -32,6 +32,7 @@
         <kafka.version>3.2.0</kafka.version>
         <amqp-client.version>5.16.0</amqp-client.version>
         <redisson.version>3.16.6</redisson.version>
+        <pulsar-client.version>2.11.0</pulsar-client.version>
     </properties>
 
     <dependencyManagement>
@@ -55,6 +56,16 @@
             <dependency>
                 <groupId>io.github.wendy512</groupId>
                 <artifactId>stream-rabbitmq</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wendy512</groupId>
+                <artifactId>stream-redis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.wendy512</groupId>
+                <artifactId>stream-pulsar</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
@@ -118,6 +129,11 @@
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.pulsar</groupId>
+                <artifactId>pulsar-client</artifactId>
+                <version>${pulsar-client.version}</version>
+            </dependency>
             <!-- Test -->
             <dependency>
                 <groupId>junit</groupId>
@@ -159,7 +175,7 @@
                             <goals>deploy</goals>
                         </configuration>
                     </plugin>
-                    <!--gpg插件-->
+                    <!--gpg插件
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -173,7 +189,7 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                 </plugins>
             </build>
 

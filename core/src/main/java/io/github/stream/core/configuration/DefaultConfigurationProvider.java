@@ -15,6 +15,7 @@ package io.github.stream.core.configuration;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,10 +26,7 @@ import io.github.stream.core.*;
 import io.github.stream.core.channel.ChannelProcessor;
 import io.github.stream.core.channel.ChannelType;
 import io.github.stream.core.channel.LoadBalancingChannelSelector;
-import io.github.stream.core.properties.ChannelProperties;
-import io.github.stream.core.properties.CoreProperties;
-import io.github.stream.core.properties.SinkProperties;
-import io.github.stream.core.properties.SourceProperties;
+import io.github.stream.core.properties.*;
 import io.github.stream.core.sink.DefaultSinkProcessor;
 import io.github.stream.core.sink.SinkType;
 import io.github.stream.core.source.SourceType;
@@ -102,12 +100,14 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             channelSelector.addChannel(channels);
             ChannelProcessor channelProcessor = new ChannelProcessor(channelSelector);
             configuration.addChannelProcessor(channel, channelProcessor);
+            // 获取instance配置
+            BaseProperties instanceProperties = getInstanceProperties(coreProperties, properties.getInstanceName());
 
             try {
                 Class<?> clazz = Class.forName(sourceClassName.getClassName());
                 Source source = (Source) clazz.newInstance();
                 source.setChannelProcessor(channelProcessor);
-                source.configure(properties);
+                source.configure(new ConfigContext(new BaseProperties(properties.getConfig()), instanceProperties));
                 configuration.addSource(name, source);
             } catch (Exception e) {
                 throw new StreamException(e);
@@ -143,36 +143,27 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 throw new StreamException("Not found channel type " + channelProperties.getType());
             }
 
-            Constructor<?> channelConstructor;
-            try {
-                channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class);
-            } catch (Exception e) {
-                throw new StreamException(e);
-            }
-
-            Constructor<?> sinkConstructor;
+            Sink sink;
+            BaseProperties sinkInstanceProperties = getInstanceProperties(coreProperties, properties.getInstanceName());
             try {
                 Class<?> clazz = Class.forName(sinkClassName.getClassName());
-                sinkConstructor = clazz.getConstructor();
-            } catch (Exception e) {
-                throw new StreamException(e);
-            }
-
-            Sink sink;
-            try {
+                Constructor<?> sinkConstructor = clazz.getConstructor();
                 sink = (Sink)sinkConstructor.newInstance();
-                sink.configure(properties);
+                sink.configure(new ConfigContext(new BaseProperties(properties.getConfig()), sinkInstanceProperties));
             } catch (Exception e) {
                 throw new StreamException(e);
             }
             configuration.addSink(name, sink);
 
+            BaseProperties channelInstanceProperties = getInstanceProperties(coreProperties, channelProperties.getInstanceName());
             for (int i = 1; i <= properties.getThreads(); i++) {
                 SinkProcessor sinkProcessor = new DefaultSinkProcessor(properties.getCacheSize());
 
                 try {
+                    Constructor<?> channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class);
                     Channel channel = (Channel)channelConstructor.newInstance(channelProperties.getCapacity());
-                    channel.configure(channelProperties);
+                    channel.configure(new ConfigContext(new BaseProperties(channelProperties.getConfig()),
+                        channelInstanceProperties));
 
                     sinkProcessor.setChannel(channel);
                     sinkProcessor.setSinks(Arrays.asList(sink));
@@ -185,5 +176,12 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 configuration.addSinkRunner(name, sinkRunner);
             }
         }
+    }
+
+    private static BaseProperties getInstanceProperties(CoreProperties coreProperties, String instanceName) {
+        // 获取instance配置
+        Map<String, Object> instanceConfig =
+                coreProperties.getInstance().getOrDefault(instanceName, Collections.emptyMap());
+        return new BaseProperties(instanceConfig);
     }
 }

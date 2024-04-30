@@ -37,6 +37,7 @@ import org.springframework.util.ResourceUtils;
 
 import io.github.stream.core.Configurable;
 import io.github.stream.core.StreamException;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.utils.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -70,11 +71,12 @@ public class MqttStateConfigure implements Configurable {
     private int qos;
 
     @Override
-    public void configure(BaseProperties properties) throws Exception {
-        this.configure(properties, true);
+    public void configure(ConfigContext context) throws Exception {
+        this.configure(context, true);
     }
 
-    public void configure(BaseProperties properties, boolean resolveTopic) throws Exception {
+    public void configure(ConfigContext context, boolean resolveTopic) throws Exception {
+        BaseProperties properties = context.getInstance();
         MqttConnectOptions options = createOptions(properties);
 
         String host = properties.getString(OPTIONS_HOST);
@@ -83,10 +85,10 @@ public class MqttStateConfigure implements Configurable {
         }
 
         if (resolveTopic) {
-            resolveTopic(properties);
+            resolveTopic(context.getConfig().get(OPTIONS_TOPIC));
         }
 
-        String clientId = properties.getString(OPTIONS_CLIENT_ID);
+        String clientId = context.getConfig().getString(OPTIONS_CLIENT_ID);
         if (StringUtils.isBlank(clientId)) {
             clientId = UUID.fastUUID().toString(true);
         }
@@ -103,8 +105,7 @@ public class MqttStateConfigure implements Configurable {
         }
     }
 
-    private void resolveTopic(BaseProperties properties) {
-        Object topicValue = properties.get(OPTIONS_TOPIC);
+    private void resolveTopic(Object topicValue) {
         if (topicValue instanceof List) {
             List<String> topicList = (List<String>) topicValue;
             Assert.notEmpty(topicList, "MQTT topic cannot be empty");
@@ -171,15 +172,13 @@ public class MqttStateConfigure implements Configurable {
             throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, KeyManagementException {
         BaseProperties ssl = properties.getProperties("ssl");
         if (null != ssl && ssl.getBooleanValue("enabled")) {
-            String keyStorePath = ssl.getString("key-store");
-            if (StringUtils.isBlank(keyStorePath)) {
-                throw new IllegalArgumentException("MQTT ssl key-store cannot be empty");
-            }
+            String keyStorePath = ssl.getString("keyStore");
+            Assert.hasText(keyStorePath, "MQTT ssl key-store cannot be empty");
 
             // 加载信任库
-            KeyStore trustStore = KeyStore.getInstance(ssl.getString("key-store-type", "JKS"));
+            KeyStore trustStore = KeyStore.getInstance(ssl.getString("keyStoreType", "JKS"));
             InputStream keyStoreStream;
-            String keyStorePassword = ssl.getString("key-store-password", "");
+            String keyStorePassword = ssl.getString("keyStorePassword", "");
 
             if (keyStorePath.startsWith(ResourceUtils.CLASSPATH_URL_PREFIX)) {
                 String path = keyStorePath.substring(ResourceUtils.CLASSPATH_URL_PREFIX.length());

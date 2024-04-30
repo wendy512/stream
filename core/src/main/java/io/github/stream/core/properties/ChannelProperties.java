@@ -13,6 +13,8 @@
 
 package io.github.stream.core.properties;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
@@ -23,7 +25,9 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class ChannelProperties extends BaseProperties {
+public class ChannelProperties {
     private int capacity = 1000;
     private String type = "memory";
+    private String instanceName;
+    private Map<String, Object> config;
 }

@@ -1,6 +1,6 @@
 package io.github.stream.core;
 
-import io.github.stream.core.properties.BaseProperties;
+import io.github.stream.core.configuration.ConfigContext;
 
 /**
  * 配置接口
@@ -12,7 +12,7 @@ public interface Configurable {
 
     /**
      * 统一配置入口
-     * @param properties
+     * @param context
      */
-    void configure(BaseProperties properties) throws Exception;
+    void configure(ConfigContext context) throws Exception;
 }

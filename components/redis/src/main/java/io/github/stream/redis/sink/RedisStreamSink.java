@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RTopic;
 
 import io.github.stream.core.Message;
-import io.github.stream.core.properties.BaseProperties;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.sink.AbstractSink;
 import io.github.stream.redis.Constants;
 import io.github.stream.redis.RedissonStateConfigure;
@@ -28,8 +28,8 @@ public class RedisStreamSink extends AbstractSink<Object> {
     private Map<String, RTopic> rTopics = new ConcurrentHashMap<>();
 
     @Override
-    public void configure(BaseProperties properties) {
-        stateConfigure.configure(properties);
+    public void configure(ConfigContext context) {
+        stateConfigure.configure(context);
     }
 
     @Override

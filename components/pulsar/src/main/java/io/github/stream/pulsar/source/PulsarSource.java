@@ -1,18 +1,21 @@
 package io.github.stream.pulsar.source;
 
+import java.util.*;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.api.*;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
 import io.github.stream.core.AbstractAutoRunnable;
+import io.github.stream.core.StreamException;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.AbstractProperties;
+import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.pulsar.PulsarStateConfigure;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pulsar.client.api.*;
-import org.springframework.util.CollectionUtils;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * pulsar-source
@@ -36,14 +39,10 @@ public class PulsarSource  extends AbstractSource<String> {
 
 
     @Override
-    public void configure(AbstractProperties properties) {
-        pulsarStateConfigure.configure(properties);
-        try {
-            pulsarClient = pulsarStateConfigure.newPulsarClient();
-            initPulsarConsumer(properties);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void configure(ConfigContext context) throws Exception {
+        pulsarStateConfigure.configure(context);
+        pulsarClient = pulsarStateConfigure.newPulsarClient();
+        this.initPulsarConsumer(context.getConfig());
     }
 
     @Override
@@ -65,7 +64,7 @@ public class PulsarSource  extends AbstractSource<String> {
         try {
             pulsarClient.close();
         } catch (PulsarClientException e) {
-            throw new RuntimeException(e);
+            throw new StreamException(e);
         }
         super.stop();
     }
@@ -75,7 +74,7 @@ public class PulsarSource  extends AbstractSource<String> {
             pulsarConsumer.unsubscribe();
             pulsarConsumer.close();
         } catch (PulsarClientException e) {
-            throw new RuntimeException(e);
+            throw new StreamException(e);
         }
     }
 
@@ -90,12 +89,9 @@ public class PulsarSource  extends AbstractSource<String> {
     }
 
     @SuppressWarnings("unchecked")
-    private void initPulsarConsumer(AbstractProperties properties) {
-        Map<String, Object> config = properties.getConfig();
-        Map<String, Object> consumerConfig = (Map<String, Object>) config.get("consumer");
-        if (null == consumerConfig) {
-            throw new IllegalArgumentException("pulsar sink consumer config cannot empty");
-        }
+    private void initPulsarConsumer(BaseProperties properties) {
+        Map<String, Object> consumerConfig = properties.getOriginal();
+        Assert.notNull(consumerConfig, "pulsar sink consumer config cannot empty");
         Map<String, Object> loadConsumerConfig = initConsumerLoadConfig(consumerConfig);
         try {
             pulsarConsumer = pulsarClient.newConsumer(Schema.STRING).loadConf(loadConsumerConfig).subscribe();
@@ -106,9 +102,7 @@ public class PulsarSource  extends AbstractSource<String> {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> initConsumerLoadConfig(Map<String, Object> config) {
-
         Map<String, Object> consumerConfig = new HashMap<>(config);
-
 
         // add topicName
         Map<String, String> topicNames = (Map<String, String>) config.get("topicNames");
@@ -225,7 +219,7 @@ public class PulsarSource  extends AbstractSource<String> {
                         pulsarConsumer.acknowledge(pulsarMessage);
                     } catch (PulsarClientException e) {
                         pulsarConsumer.negativeAcknowledge(pulsarMessage);
-                        throw new RuntimeException(e);
+                        throw new StreamException(e);
                     }
                 }
             }

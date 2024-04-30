@@ -17,14 +17,14 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import com.rabbitmq.client.*;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.rabbitmq.RabbitMqStateConfigure;
 
@@ -45,8 +45,8 @@ public class RabbitMqSource extends AbstractSource {
     private Channel channel;
 
     @Override
-    public void configure(BaseProperties properties) {
-        stateConfigure.configure(properties);
+    public void configure(ConfigContext context) {
+        stateConfigure.configure(context);
         // 初始化连接
         try {
             this.connection = stateConfigure.newConnection();
@@ -54,7 +54,8 @@ public class RabbitMqSource extends AbstractSource {
             throw new StreamException(e);
         }
 
-        this.exchangeQueueBind = (Map<String, Object>) properties.get("exchangeQueueBind");
+        this.exchangeQueueBind = (Map<String, Object>) context.getConfig().get("exchangeQueueBind");
+        Assert.notNull(exchangeQueueBind, "RabbitMQ exchangeQueueBind must not be null");
     }
 
     @Override
@@ -70,9 +71,7 @@ public class RabbitMqSource extends AbstractSource {
 
             Map infoMap = (Map) info;
             String queue = MapUtils.getString(infoMap, "queue");
-            if (StringUtils.isBlank(queue)) {
-                throw new IllegalArgumentException(String.format("Exchange %s queue is empty"));
-            }
+            Assert.hasText(queue, String.format("Exchange %s queue is empty", exchange));
             String routingKey = MapUtils.getString(infoMap, "routingKey");
             String[] queues = queue.split(",");
 

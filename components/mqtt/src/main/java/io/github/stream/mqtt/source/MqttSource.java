@@ -22,8 +22,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.mqtt.MqttStateConfigure;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +40,8 @@ public class MqttSource extends AbstractSource<String> {
     private final MqttStateConfigure stateConfigure = new MqttStateConfigure();
 
     @Override
-    public void configure(BaseProperties properties) throws Exception {
-        stateConfigure.configure(properties);
+    public void configure(ConfigContext context) throws Exception {
+        stateConfigure.configure(context);
     }
 
     @Override

@@ -29,8 +29,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import io.github.stream.core.AbstractAutoRunnable;
 import io.github.stream.core.Message;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,25 +56,25 @@ public class KafkaSource extends AbstractSource {
     private boolean autoCommit;
 
     @Override
-    public void configure(BaseProperties properties) {
-        String topic = properties.getString("topic");
+    public void configure(ConfigContext context) {
+        String topic = context.getConfig().getString("topic");
         if (StringUtils.isBlank(topic)) {
-            throw new IllegalArgumentException("Kafka topic is empty");
+            throw new IllegalArgumentException("Kafka topic config is empty");
         }
 
-        Map config = properties.getConfig();
+        Map consumerProperties = context.getInstance().getOriginal();
         // 手动提交
-        config.putIfAbsent(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        consumerProperties.putIfAbsent(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         // 自动提交间隔
-        config.putIfAbsent(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000);
+        consumerProperties.putIfAbsent(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 1000);
         // 配置序列化
-        config.putIfAbsent(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        config.putIfAbsent(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerProperties.putIfAbsent(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerProperties.putIfAbsent(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
         this.topics = Arrays.asList(topic.split(","));
-        this.interval = properties.getInt("pollInterval", 50);
-        this.autoCommit = MapUtils.getBooleanValue(config,  ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG);
-        this.kafkaConsumer = new KafkaConsumer(config);
+        this.interval = context.getConfig().getInt("pollInterval", 50);
+        this.autoCommit = MapUtils.getBooleanValue(consumerProperties,  ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG);
+        this.kafkaConsumer = new KafkaConsumer(consumerProperties);
     }
 
     @Override

@@ -24,8 +24,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import io.github.stream.core.Message;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageHeaders;
-import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.sink.AbstractSink;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,8 +41,8 @@ public class KafkaSink extends AbstractSink<Object> {
     private KafkaProducer kafkaProducer;
 
     @Override
-    public void configure(BaseProperties properties) {
-        Map config = properties.getConfig();
+    public void configure(ConfigContext context) {
+        Map config = context.getInstance().getOriginal();
         if (null == config) {
             throw new IllegalArgumentException("Kafka sink config cannot empty");
         }
@@ -64,18 +64,17 @@ public class KafkaSink extends AbstractSink<Object> {
             String topic = headers.getString("topic");
             Object key = headers.get("key");
             Integer partition = MapUtils.getInteger(headers, "partition");
-            Long timestamp = MapUtils.getLong(headers, "timestamp");
             Object payload = message.getPayload();
             if (StringUtils.isBlank(topic)) {
                 continue;
             }
 
-            send(topic, partition, timestamp, key, payload);
+            send(topic, partition, key, payload);
         }
     }
 
-    public void send(String topic, Integer partition, Long timestamp, Object key, Object payload) {
-        ProducerRecord record = new ProducerRecord(topic, partition, timestamp, key, payload);
+    public void send(String topic, Integer partition, Object key, Object payload) {
+        ProducerRecord record = new ProducerRecord(topic, partition, key, payload);
         kafkaProducer.send(record);
     }
 }

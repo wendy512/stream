@@ -32,6 +32,7 @@ buildNumber.properties
 *.ipr
 rebel.xml
 logs/
+.flattened-pom.xml
 
 ### NetBeans ###
 /nbproject/private/

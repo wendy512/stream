@@ -7,8 +7,8 @@ import org.redisson.api.RTopic;
 import org.redisson.api.listener.MessageListener;
 
 import io.github.stream.core.Message;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.message.MessageBuilder;
-import io.github.stream.core.properties.BaseProperties;
 import io.github.stream.core.source.AbstractSource;
 import io.github.stream.redis.Constants;
 import io.github.stream.redis.RedissonStateConfigure;
@@ -28,9 +28,9 @@ public class RedisStreamSource extends AbstractSource {
     private List<RTopic> rTopics;
 
     @Override
-    public void configure(BaseProperties properties) {
-        this.stateConfigure.configure(properties);
-        this.topics = stateConfigure.resolveTopic(properties);
+    public void configure(ConfigContext context) {
+        this.stateConfigure.configure(context);
+        this.topics = stateConfigure.resolveTopic(context.getConfig());
     }
 
     @Override

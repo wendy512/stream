@@ -33,10 +33,12 @@ If you use Maven, you just need to add the following dependency in pom.xml:
 [Reference Wiki](https://github.com/wendy512/stream/wiki)
 
 ## Examples
-* [Local queue](https://github.com/wendy512/stream/tree/master/samples/local-sample)
-* [Kafka](https://github.com/wendy512/stream/tree/master/samples/kafka-sample)
-* [MQTT](https://github.com/wendy512/stream/tree/master/samples/mqtt-sample)
-* [RabbitMQ](https://github.com/wendy512/stream/tree/master/samples/rabbitmq-sample)
+* [Local queue](https://github.com/wendy512/stream-samples/local-sample)
+* [Kafka](https://github.com/wendy512/stream-samples/kafka-sample)
+* [MQTT](https://github.com/wendy512/stream-samples/mqtt-sample)
+* [RabbitMQ](https://github.com/wendy512/stream-samples/rabbitmq-sample)
+* [Redis](https://github.com/wendy512/stream-samples/redis-sample)
+* [Pulsar](https://github.com/wendy512/stream-samples/pulsar-sample)
 
 ## License
 Stream is based on the [Apache License 2.0](./LICENSE) agreement, and Stream relies on some third-party components whose open source agreement is also Apache License 2.0.

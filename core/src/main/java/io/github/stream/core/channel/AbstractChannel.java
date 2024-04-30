@@ -19,11 +19,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.github.stream.core.Channel;
 import io.github.stream.core.Message;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.interceptor.InterceptableChannel;
 import io.github.stream.core.interceptor.Interceptor;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import io.github.stream.core.lifecycle.LifecycleState;
-import io.github.stream.core.properties.BaseProperties;
 
 /**
  * 提取公共方法抽象类
@@ -51,7 +51,7 @@ public abstract class AbstractChannel<T> extends AbstractLifecycleAware implemen
     }
 
     @Override
-    public void configure(BaseProperties properties) {}
+    public void configure(ConfigContext context) {}
 
     protected abstract void doPut(Message<T> message);
 

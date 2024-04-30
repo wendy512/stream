@@ -28,7 +28,7 @@
         <source.java.version>1.8</source.java.version>
         <target.java.version>1.8</target.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <revision>1.0.1</revision>
+        <revision>1.0.2</revision>
         <lombok.version>1.18.20</lombok.version>
         <junit.version>4.13.1</junit.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -143,7 +143,7 @@
                             <doclint>none</doclint>
                         </configuration>
                     </plugin>
-                    <!--gpg插件-->
+                    <!--gpg插件
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -157,7 +157,7 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
+                    </plugin>-->
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>versions-maven-plugin</artifactId>

@@ -12,6 +12,7 @@ import org.redisson.config.Config;
 import org.springframework.util.Assert;
 
 import io.github.stream.core.Configurable;
+import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.properties.BaseProperties;
 
 /**
@@ -25,7 +26,8 @@ public class RedissonStateConfigure implements Configurable {
     private RedissonClient client;
 
     @Override
-    public void configure(BaseProperties properties) {
+    public void configure(ConfigContext context) {
+        BaseProperties properties = context.getInstance();
         String mode = properties.getString("mode", Constants.MODE_SINGLE);
         String address = properties.getString("address");
         Assert.hasText(address, "address cannot be empty");
@@ -75,7 +77,7 @@ public class RedissonStateConfigure implements Configurable {
             return topicList.toArray(new String[topicList.size()]);
         } else {
             String topic = (String) topicValue;
-            Assert.hasText(topic, "redis topic cannot be empty");
+            Assert.hasText(topic, "redis topic config cannot be empty");
             return topic.split(",");
         }
     }

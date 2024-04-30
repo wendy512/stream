@@ -13,6 +13,8 @@
 
 package io.github.stream.core.properties;
 
+import java.util.Map;
+
 import lombok.Data;
 
 /**
@@ -22,7 +24,12 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class SourceProperties extends BaseProperties {
+public class SourceProperties {
     private String type;
+
     private String channel;
+
+    private String instanceName;
+
+    private Map<String, Object> config;
 }

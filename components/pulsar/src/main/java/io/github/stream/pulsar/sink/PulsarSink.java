@@ -1,19 +1,22 @@
 package io.github.stream.pulsar.sink;
 
-import io.github.stream.core.Message;
-import io.github.stream.core.properties.AbstractProperties;
-import io.github.stream.core.sink.AbstractSink;
-import io.github.stream.pulsar.PulsarStateConfigure;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.pulsar.client.api.*;
-import org.apache.pulsar.shade.org.apache.avro.data.Json;
-
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.shade.org.apache.avro.data.Json;
+import org.springframework.util.Assert;
+
+import io.github.stream.core.Message;
+import io.github.stream.core.StreamException;
+import io.github.stream.core.configuration.ConfigContext;
+import io.github.stream.core.properties.BaseProperties;
+import io.github.stream.core.sink.AbstractSink;
+import io.github.stream.pulsar.PulsarStateConfigure;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * pulsar-sink
@@ -25,40 +28,25 @@ public class PulsarSink extends AbstractSink<Object> {
 
     private final PulsarStateConfigure pulsarStateConfigure = new PulsarStateConfigure();
     private Producer<byte[]> pulsarProducer;
-
     private PulsarClient pulsarClient;
 
-
-
     @Override
-    public void configure(AbstractProperties properties) {
-        pulsarStateConfigure.configure(properties);
-        try {
-            pulsarClient = pulsarStateConfigure.newPulsarClient();
-            initPulsarProducer(properties);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void configure(ConfigContext context) throws Exception {
+        pulsarStateConfigure.configure(context);
+        pulsarClient = pulsarStateConfigure.newPulsarClient();
+        this.initPulsarProducer(context.getConfig());
     }
 
     @SuppressWarnings("unchecked")
-    private void initPulsarProducer(AbstractProperties properties) {
-        Map<String, Object> config = properties.getConfig();
-        Map<String, Object> producerConfig = (Map<String, Object>) config.get("producer");
-        if (null == producerConfig) {
-            throw new IllegalArgumentException("pulsar sink producer config cannot empty");
-        }
+    private void initPulsarProducer(BaseProperties properties) throws PulsarClientException {
+        Map<String, Object> producerConfig = properties.getOriginal();
+        Assert.notNull(producerConfig, "pulsar sink producer config cannot empty");
         Map<String, Object> loadProducerConfig = initProducerLoadConfig(producerConfig);
-        try {
-            pulsarProducer = pulsarClient.newProducer().loadConf(loadProducerConfig).create();
-        } catch (PulsarClientException e) {
-            throw new RuntimeException(e);
-        }
+        this.pulsarProducer = pulsarClient.newProducer().loadConf(loadProducerConfig).create();
     }
 
     private Map<String, Object> initProducerLoadConfig(Map<String, Object> config) {
         Map<String, Object> producerConfig = new HashMap<>(config);
-
 
         // add messageRoutingMode
         String messageRoutingMode = (String) config.get("messageRoutingMode");
@@ -125,9 +113,6 @@ public class PulsarSink extends AbstractSink<Object> {
             }
         }
 
-
-
-
         return producerConfig;
     }
 
@@ -136,7 +121,7 @@ public class PulsarSink extends AbstractSink<Object> {
         try {
             pulsarClient.close();
         } catch (PulsarClientException e) {
-            throw new RuntimeException(e);
+            throw new StreamException(e);
         }
         super.stop();
     }
@@ -153,7 +138,7 @@ public class PulsarSink extends AbstractSink<Object> {
                     pulsarProducer.send(Json.toString(payload).getBytes(StandardCharsets.UTF_8));
                 }
             } catch (PulsarClientException e) {
-                throw new RuntimeException(e);
+                throw new StreamException(e);
             }
         }
     }

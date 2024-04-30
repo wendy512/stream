@@ -13,10 +13,12 @@
 
 package io.github.stream.core.properties;
 
-import lombok.Data;
+import java.util.Collections;
+import java.util.Map;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Map;
+import lombok.Data;
 
 /**
  * 核心配置
@@ -34,4 +36,5 @@ public class CoreProperties {
     private Map<String, ChannelProperties> channel;
     private Map<String, SourceProperties> source;
     private Map<String, SinkProperties> sink;
+    private Map<String, Map<String, Object>> instance = Collections.emptyMap();
 }
