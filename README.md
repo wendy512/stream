@@ -24,7 +24,7 @@ If you use Maven, you just need to add the following dependency in pom.xml:
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ``` 
 
@@ -33,12 +33,12 @@ If you use Maven, you just need to add the following dependency in pom.xml:
 [Reference Wiki](https://github.com/wendy512/stream/wiki)
 
 ## Examples
-* [Local queue](https://github.com/wendy512/stream-samples/local-sample)
-* [Kafka](https://github.com/wendy512/stream-samples/kafka-sample)
-* [MQTT](https://github.com/wendy512/stream-samples/mqtt-sample)
-* [RabbitMQ](https://github.com/wendy512/stream-samples/rabbitmq-sample)
-* [Redis](https://github.com/wendy512/stream-samples/redis-sample)
-* [Pulsar](https://github.com/wendy512/stream-samples/pulsar-sample)
+* [Local queue](https://github.com/wendy512/stream-samples/tree/master/local-sample)
+* [Kafka](https://github.com/wendy512/stream-samples/tree/master/kafka-sample)
+* [MQTT](https://github.com/wendy512/stream-samples/tree/master/mqtt-sample)
+* [RabbitMQ](https://github.com/wendy512/stream-samples/tree/master/rabbitmq-sample)
+* [Redis](https://github.com/wendy512/stream-samples/tree/master/redis-sample)
+* [Pulsar](https://github.com/wendy512/stream-samples/tree/master/pulsar-sample)
 
 ## License
 Stream is based on the [Apache License 2.0](./LICENSE) agreement, and Stream relies on some third-party components whose open source agreement is also Apache License 2.0.

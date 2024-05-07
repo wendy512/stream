@@ -24,7 +24,7 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ``` 
 
@@ -33,10 +33,12 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 [参考Wiki](https://github.com/wendy512/stream/wiki)
 
 ## 示例
-* [本地队列](https://github.com/wendy512/stream/tree/master/samples/local-sample)
-* [Kafka](https://github.com/wendy512/stream/tree/master/samples/kafka-sample)
-* [MQTT](https://github.com/wendy512/stream/tree/master/samples/mqtt-sample)
-* [RabbitMQ](https://github.com/wendy512/stream/tree/master/samples/rabbitmq-sample)
+* [Local queue](https://github.com/wendy512/stream-samples/tree/master/local-sample)
+* [Kafka](https://github.com/wendy512/stream-samples/tree/master/kafka-sample)
+* [MQTT](https://github.com/wendy512/stream-samples/tree/master/mqtt-sample)
+* [RabbitMQ](https://github.com/wendy512/stream-samples/tree/master/rabbitmq-sample)
+* [Redis](https://github.com/wendy512/stream-samples/tree/master/redis-sample)
+* [Pulsar](https://github.com/wendy512/stream-samples/tree/master/pulsar-sample)
 
 ## 开源许可
 Stream 基于 [Apache License 2.0](./LICENSE) 协议，Stream 依赖了一些第三方组件，它们的开源协议也为 Apache License 2.0。
