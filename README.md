@@ -19,12 +19,24 @@ Stream asynchronous message high-performance processing framework, similar to go
 Compilation requires JDK 8 and above, Maven 3.2.5 and above.
 
 ## Integrated
-If you use Maven, you just need to add the following dependency in pom.xml:
+If you use Maven, you just need to add the following dependency in pom.xml
+
+### Spring Boot2 version
 ```xml  
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
+</dependency>
+``` 
+
+### Spring Boot3 version
+The jdk version must be 17 or above
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-core-springboot3</artifactId>
+    <version>1.0.3</version>
 </dependency>
 ``` 
 

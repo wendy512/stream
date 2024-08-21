@@ -20,11 +20,23 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 
 ## 集成
 如果你使用 Maven，你只需要在 pom.xml 中添加下面的依赖：
+
+### Spring Boot2 版本
 ```xml  
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
+</dependency>
+``` 
+
+### Spring Boot3 版本
+jdk版本必须在17及以上
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-core-springboot3</artifactId>
+    <version>1.0.3</version>
 </dependency>
 ``` 
 
