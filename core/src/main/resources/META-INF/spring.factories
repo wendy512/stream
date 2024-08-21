@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.github.stream.core.configuration.StreamAutoConfiguration
+io.github.stream.core.StreamAutoConfiguration

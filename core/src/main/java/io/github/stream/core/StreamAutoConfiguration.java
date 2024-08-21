@@ -11,7 +11,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package io.github.stream.core.configuration;
+package io.github.stream.core;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,14 +21,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-import io.github.stream.core.ApplicationRunner;
-import io.github.stream.core.StreamApplicationRunner;
 import io.github.stream.core.channel.ChannelContext;
+import io.github.stream.core.configuration.ConfigurationProvider;
+import io.github.stream.core.configuration.MaterializedConfiguration;
+import io.github.stream.core.configuration.StreamBeanPostProcessor;
 import io.github.stream.core.properties.CoreProperties;
 import io.github.stream.core.utils.SpringUtil;
 
 /**
- * 自动装配
+ * springboot2 自动装配
  * @author wendy512@yeah.net
  * @date 2023-05-22 14:08:22
  * @since 1.0.0
