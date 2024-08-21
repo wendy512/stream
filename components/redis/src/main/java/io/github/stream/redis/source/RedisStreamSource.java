@@ -21,7 +21,7 @@ import io.github.stream.redis.RedissonStateConfigure;
  */
 public class RedisStreamSource extends AbstractSource {
 
-    private final RedissonStateConfigure stateConfigure = new RedissonStateConfigure();
+    private RedissonStateConfigure stateConfigure;
 
     private String[] topics;
 
@@ -29,6 +29,7 @@ public class RedisStreamSource extends AbstractSource {
 
     @Override
     public void configure(ConfigContext context) {
+        this.stateConfigure = RedissonStateConfigure.getInstance(context.getInstanceName());
         this.stateConfigure.configure(context);
         this.topics = stateConfigure.resolveTopic(context.getConfig());
     }

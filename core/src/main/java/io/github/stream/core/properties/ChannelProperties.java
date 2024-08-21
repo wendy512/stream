@@ -13,6 +13,7 @@
 
 package io.github.stream.core.properties;
 
+import java.util.Collections;
 import java.util.Map;
 
 import lombok.Data;
@@ -26,8 +27,8 @@ import lombok.Data;
  */
 @Data
 public class ChannelProperties {
-    private int capacity = 1000;
+    private int capacity = 10000;
     private String type = "memory";
-    private String instanceName;
-    private Map<String, Object> config;
+    //private String instance;
+    private Map<String, Object> config = Collections.emptyMap();
 }

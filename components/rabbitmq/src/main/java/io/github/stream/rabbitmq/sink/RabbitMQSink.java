@@ -43,7 +43,7 @@ import io.github.stream.rabbitmq.RabbitMqStateConfigure;
  * @date 2023-05-25 14:19:27
  * @since 1.0.0
  */
-public class RabbitMqSink extends AbstractSink<Object> {
+public class RabbitMQSink extends AbstractSink<Object> {
 
     private RabbitMqStateConfigure stateConfigure;
 
@@ -57,7 +57,7 @@ public class RabbitMqSink extends AbstractSink<Object> {
 
     @Override
     public void configure(ConfigContext context) {
-        this.stateConfigure = new RabbitMqStateConfigure();
+        this.stateConfigure = RabbitMqStateConfigure.getInstance(context.getInstanceName());
         this.stateConfigure.configure(context);
         try {
             this.connection = stateConfigure.newConnection();

@@ -19,6 +19,10 @@ public class ConfigContext {
      */
     private BaseProperties config;
     /**
+     * 实例名称
+     */
+    private String instanceName;
+    /**
      * 客户端实例配置
      */
     private BaseProperties instance;

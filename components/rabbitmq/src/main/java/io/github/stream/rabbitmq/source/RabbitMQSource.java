@@ -34,11 +34,11 @@ import io.github.stream.rabbitmq.RabbitMqStateConfigure;
  * @date 2023-05-24 13:56:41
  * @since 1.0.0
  */
-public class RabbitMqSource extends AbstractSource {
+public class RabbitMQSource extends AbstractSource {
 
     private Connection connection;
 
-    private final RabbitMqStateConfigure stateConfigure = new RabbitMqStateConfigure();
+    private RabbitMqStateConfigure stateConfigure;
 
     private Map<String, Object> exchangeQueueBind;
 
@@ -46,10 +46,11 @@ public class RabbitMqSource extends AbstractSource {
 
     @Override
     public void configure(ConfigContext context) {
-        stateConfigure.configure(context);
+        this.stateConfigure = RabbitMqStateConfigure.getInstance(context.getInstanceName());
+        this.stateConfigure.configure(context);
         // 初始化连接
         try {
-            this.connection = stateConfigure.newConnection();
+            this.connection = this.stateConfigure.newConnection();
         } catch (Exception e) {
             throw new StreamException(e);
         }

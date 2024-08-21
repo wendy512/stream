@@ -23,13 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisStreamSink extends AbstractSink<Object> {
 
-    private final RedissonStateConfigure stateConfigure = new RedissonStateConfigure();
+    private RedissonStateConfigure stateConfigure;
 
     private Map<String, RTopic> rTopics = new ConcurrentHashMap<>();
 
     @Override
     public void configure(ConfigContext context) {
-        stateConfigure.configure(context);
+        this.stateConfigure = RedissonStateConfigure.getInstance(context.getInstanceName());
+        this.stateConfigure.configure(context);
     }
 
     @Override

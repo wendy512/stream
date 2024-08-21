@@ -52,22 +52,6 @@ public class BaseProperties {
         return MapUtils.getInteger(original, key);
     }
 
-    public Integer getInteger(String key, Integer defaultValue) {
-        return MapUtils.getInteger(original, key, defaultValue);
-    }
-
-    public String removeString(String key) {
-        String value = getString(key);
-        original.remove(key);
-        return value;
-    }
-
-    public int removeInt(String key, int defaultValue) {
-        int value = getInt(key, defaultValue);
-        original.remove(key);
-        return value;
-    }
-
     public BaseProperties getProperties(String key) {
         Map childConfig = MapUtils.getMap(this.original, key);
         if (null == childConfig) {

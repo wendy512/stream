@@ -14,6 +14,8 @@
 package io.github.stream.rabbitmq;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,9 +33,36 @@ import io.github.stream.core.properties.BaseProperties;
  * @date 2023-05-25 14:22:33
  * @since 1.0.0
  */
-public class RabbitMqStateConfigure implements Configurable {
+public final class RabbitMqStateConfigure implements Configurable {
+
+    private static final Map<String, RabbitMqStateConfigure> instances = new ConcurrentHashMap<>();
 
     private ConnectionFactory connectionFactory;
+
+    private RabbitMqStateConfigure() {}
+
+    /**
+     * 获取客户端实例，保证同一实例名只创建一个客户端，节省资源
+     * @param name 实例名称
+     * @return 创建后的客户端实例
+     */
+    public static RabbitMqStateConfigure getInstance(String name) {
+        RabbitMqStateConfigure instance = instances.get(name);
+        if (instance != null) {
+            return instance;
+        }
+
+        synchronized (RabbitMqStateConfigure.class) {
+            // double check
+            if (!instances.containsKey(name)) {
+                instance = new RabbitMqStateConfigure();
+                instances.put(name, instance);
+            } else {
+                instance = instances.get(name);
+            }
+        }
+        return instance;
+    }
 
     @Override
     public void configure(ConfigContext context) {

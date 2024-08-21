@@ -13,6 +13,7 @@
 
 package io.github.stream.core.properties;
 
+import java.util.Collections;
 import java.util.Map;
 
 import lombok.Data;
@@ -36,7 +37,7 @@ public class SinkProperties {
 
     private int interval = 50;
 
-    private String instanceName;
+    private String instance;
 
-    private Map<String, Object> config;
+    private Map<String, Object> config = Collections.emptyMap();
 }

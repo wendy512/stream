@@ -25,7 +25,7 @@ import io.github.stream.core.configuration.ComponentWithClassName;
 public enum SinkType implements ComponentWithClassName {
 
     DEFAULT("io.github.stream.core.sink.DefaultSink"), MQTT("io.github.stream.mqtt.sink.MqttSink"),
-    KAFKA("io.github.stream.kafka.sink.KafkaSink"), RABBITMQ("io.github.stream.rabbitmq.sink.RabbitMqSink"),
+    KAFKA("io.github.stream.kafka.sink.KafkaSink"), RABBITMQ("io.github.stream.rabbitmq.sink.RabbitMQSink"),
     REDIS("io.github.stream.redis.sink.RedisStreamSink"), PULSAR("io.github.stream.pulsar.sink.PulsarSink");
 
     private final String className;

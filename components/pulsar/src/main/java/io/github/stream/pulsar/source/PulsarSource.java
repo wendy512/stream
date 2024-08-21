@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PulsarSource  extends AbstractSource<String> {
 
-    private final PulsarStateConfigure pulsarStateConfigure = new PulsarStateConfigure();
+    private PulsarStateConfigure pulsarStateConfigure;
 
     private Consumer<String> pulsarConsumer;
 
@@ -40,8 +40,9 @@ public class PulsarSource  extends AbstractSource<String> {
 
     @Override
     public void configure(ConfigContext context) throws Exception {
-        pulsarStateConfigure.configure(context);
-        pulsarClient = pulsarStateConfigure.newPulsarClient();
+        this.pulsarStateConfigure = PulsarStateConfigure.getInstance(context.getInstanceName());
+        this.pulsarStateConfigure.configure(context);
+        this.pulsarClient = pulsarStateConfigure.getClient();
         this.initPulsarConsumer(context.getConfig());
     }
 

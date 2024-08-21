@@ -22,6 +22,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -49,7 +51,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 1.0.0
  */
 @Slf4j
-public class MqttStateConfigure implements Configurable {
+public final class MqttStateConfigure implements Configurable {
 
     public static final String OPTIONS_HOST = "host";
     public static final String OPTIONS_CLIENT_ID = "clientId";
@@ -64,11 +66,38 @@ public class MqttStateConfigure implements Configurable {
     public static final String OPTIONS_TIMETOWAIT = "timeToWait";
     public static final int DEFAULT_TIMETOWAIT = 60000;
 
+    private static final Map<String, MqttStateConfigure> instances = new ConcurrentHashMap<>();
+
     private MqttClient client;
 
     private String[] topics;
 
     private int qos;
+
+    private MqttStateConfigure() {}
+
+    /**
+     * 获取客户端实例，保证同一实例名只创建一个客户端，节省资源
+     * @param name 实例名称
+     * @return 创建后的客户端实例
+     */
+    public static MqttStateConfigure getInstance(String name) {
+        MqttStateConfigure instance = instances.get(name);
+        if (instance != null) {
+            return instance;
+        }
+
+        synchronized (MqttStateConfigure.class) {
+            // double check
+            if (!instances.containsKey(name)) {
+                instance = new MqttStateConfigure();
+                instances.put(name, instance);
+            } else {
+                instance = instances.get(name);
+            }
+        }
+        return instance;
+    }
 
     @Override
     public void configure(ConfigContext context) throws Exception {
@@ -120,11 +149,11 @@ public class MqttStateConfigure implements Configurable {
     private MqttConnectOptions createOptions(BaseProperties properties) throws Exception {
         int connectionTimeout =
                 properties.getInt(OPTIONS_CONNECT_TIMEOUT, MqttConnectOptions.CONNECTION_TIMEOUT_DEFAULT);
-        int keepAlive = properties.getInt( OPTIONS_KEEP_ALIVE_INTERVAL,
+        int keepAlive = properties.getInt(OPTIONS_KEEP_ALIVE_INTERVAL,
                 MqttConnectOptions.KEEP_ALIVE_INTERVAL_DEFAULT);
         boolean cleanSession =
                 properties.getBooleanValue(OPTIONS_CLEAN_SESSION, MqttConnectOptions.CLEAN_SESSION_DEFAULT);
-        boolean autoReconnect = properties.getBooleanValue( OPTIONS_AUTOMATIC_RECONNECT, true);
+        boolean autoReconnect = properties.getBooleanValue(OPTIONS_AUTOMATIC_RECONNECT, true);
         String username = properties.getString(OPTIONS_USERNAME);
         String password = properties.getString(OPTIONS_PASSWORD);
 

@@ -37,10 +37,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MqttSource extends AbstractSource<String> {
 
-    private final MqttStateConfigure stateConfigure = new MqttStateConfigure();
+    private MqttStateConfigure stateConfigure;
 
     @Override
     public void configure(ConfigContext context) throws Exception {
+        this.stateConfigure = MqttStateConfigure.getInstance(context.getInstanceName());
         stateConfigure.configure(context);
     }
 

@@ -83,31 +83,32 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             try {
                 sourceClassName = SourceType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new StreamException("source " + name + "Not found  type " + properties.getType());
+                throw new StreamException("Source '" + name + "' type value no match");
             }
 
             ChannelSelector channelSelector =
                 new LoadBalancingChannelSelector(LoadBalancingChannelSelector.Policy.ROUND_ROBIN);
             String channel = properties.getChannel();
             if (StringUtils.isBlank(channel)) {
-                throw new StreamException("source " + name + " channel cannot be empty ");
+                throw new StreamException("Source '" + name + "' channel cannot be empty ");
             }
 
             List<Channel> channels = configuration.getChannels().get(channel);
             if (null == channels) {
-                throw new StreamException("source " + name + "Not found channel " + channel);
+                throw new StreamException("Source '" + name + "' not found channel " + channel);
             }
             channelSelector.addChannel(channels);
             ChannelProcessor channelProcessor = new ChannelProcessor(channelSelector);
             configuration.addChannelProcessor(channel, channelProcessor);
             // 获取instance配置
-            BaseProperties instanceProperties = getInstanceProperties(coreProperties, properties.getInstanceName());
+            BaseProperties instanceProperties = getInstanceProperties(coreProperties, properties.getInstance());
 
             try {
                 Class<?> clazz = Class.forName(sourceClassName.getClassName());
                 Source source = (Source) clazz.newInstance();
                 source.setChannelProcessor(channelProcessor);
-                source.configure(new ConfigContext(new BaseProperties(properties.getConfig()), instanceProperties));
+                source.configure(new ConfigContext(new BaseProperties(properties.getConfig()), properties.getInstance(),
+                    instanceProperties));
                 configuration.addSource(name, source);
             } catch (Exception e) {
                 throw new StreamException(e);
@@ -130,7 +131,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             try {
                 sinkClassName = SinkType.valueOf(properties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new StreamException("sink " + name + " Not found type " + properties.getType());
+                throw new StreamException("Sink '" + name + "' type value no match");
             }
 
             String channelName = properties.getChannel();
@@ -140,31 +141,28 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             try {
                 channelClassName = ChannelType.valueOf(channelProperties.getType().toUpperCase());
             } catch (IllegalArgumentException e) {
-                throw new StreamException("Not found channel type " + channelProperties.getType());
+                throw new StreamException("Not found channel type '" + channelProperties.getType() + "'");
             }
 
             Sink sink;
-            BaseProperties sinkInstanceProperties = getInstanceProperties(coreProperties, properties.getInstanceName());
+            BaseProperties sinkInstanceProperties = getInstanceProperties(coreProperties, properties.getInstance());
             try {
                 Class<?> clazz = Class.forName(sinkClassName.getClassName());
                 Constructor<?> sinkConstructor = clazz.getConstructor();
                 sink = (Sink)sinkConstructor.newInstance();
-                sink.configure(new ConfigContext(new BaseProperties(properties.getConfig()), sinkInstanceProperties));
+                sink.configure(new ConfigContext(new BaseProperties(properties.getConfig()), properties.getInstance(),
+                    sinkInstanceProperties));
             } catch (Exception e) {
                 throw new StreamException(e);
             }
             configuration.addSink(name, sink);
 
-            BaseProperties channelInstanceProperties = getInstanceProperties(coreProperties, channelProperties.getInstanceName());
             for (int i = 1; i <= properties.getThreads(); i++) {
                 SinkProcessor sinkProcessor = new DefaultSinkProcessor(properties.getCacheSize());
 
                 try {
                     Constructor<?> channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class);
                     Channel channel = (Channel)channelConstructor.newInstance(channelProperties.getCapacity());
-                    channel.configure(new ConfigContext(new BaseProperties(channelProperties.getConfig()),
-                        channelInstanceProperties));
-
                     sinkProcessor.setChannel(channel);
                     sinkProcessor.setSinks(Arrays.asList(sink));
                     configuration.addChannel(channelName, channel);

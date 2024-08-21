@@ -26,14 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PulsarSink extends AbstractSink<Object> {
 
-    private final PulsarStateConfigure pulsarStateConfigure = new PulsarStateConfigure();
+    private PulsarStateConfigure pulsarStateConfigure;
     private Producer<byte[]> pulsarProducer;
     private PulsarClient pulsarClient;
 
     @Override
     public void configure(ConfigContext context) throws Exception {
-        pulsarStateConfigure.configure(context);
-        pulsarClient = pulsarStateConfigure.newPulsarClient();
+        this.pulsarStateConfigure = PulsarStateConfigure.getInstance(context.getInstanceName());
+        this.pulsarStateConfigure.configure(context);
+        this.pulsarClient = pulsarStateConfigure.getClient();
         this.initPulsarProducer(context.getConfig());
     }
 

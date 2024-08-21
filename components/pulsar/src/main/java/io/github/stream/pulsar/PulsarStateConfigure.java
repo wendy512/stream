@@ -2,30 +2,56 @@ package io.github.stream.pulsar;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 
 import io.github.stream.core.Configurable;
 import io.github.stream.core.configuration.ConfigContext;
+import lombok.Getter;
 
 /**
  * pulsar配置加载
  * @author jujiale
  * @date 2024/04
  */
-public class PulsarStateConfigure implements Configurable {
+@Getter
+public final class PulsarStateConfigure implements Configurable {
 
-    ClientBuilder builder;
+    private static final Map<String, PulsarStateConfigure> instances = new ConcurrentHashMap<>();
 
+    private PulsarClient client;
 
-    @Override
-    public void configure(ConfigContext context) {
-        builder = createPulsarClientBuilder(context);
+    private PulsarStateConfigure() {}
+
+    /**
+     * 获取客户端实例，保证同一实例名只创建一个客户端，节省资源
+     * @param name 实例名称
+     * @return 创建后的客户端实例
+     */
+    public static PulsarStateConfigure getInstance(String name) {
+        PulsarStateConfigure instance = instances.get(name);
+        if (instance != null) {
+            return instance;
+        }
+
+        synchronized (PulsarStateConfigure.class) {
+            // double check
+            if (!instances.containsKey(name)) {
+                instance = new PulsarStateConfigure();
+                instances.put(name, instance);
+            } else {
+                instance = instances.get(name);
+            }
+        }
+        return instance;
     }
 
-    public PulsarClient newPulsarClient() throws IOException {
-        return builder.build();
+    @Override
+    public void configure(ConfigContext context) throws IOException {
+        ClientBuilder builder = createPulsarClientBuilder(context);
+        this.client = builder.build();
     }
 
     @SuppressWarnings("unchecked")

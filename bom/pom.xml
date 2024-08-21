@@ -14,7 +14,7 @@
     <url>https://github.com/wendy512/stream</url>
 
     <properties>
-        <revision>1.0.2</revision>
+        <revision>1.0.3</revision>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>

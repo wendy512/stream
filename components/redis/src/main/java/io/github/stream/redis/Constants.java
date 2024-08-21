@@ -16,5 +16,5 @@ public interface Constants {
     // 连接模式：主从复制
     String MODE_REPLICATED = "replicated";
 
-    String  TOPIC_KEY = "topic";
+    String TOPIC_KEY = "topic";
 }

@@ -39,7 +39,7 @@ public class MqttSink extends AbstractSink<String> {
 
     @Override
     public void configure(ConfigContext context) throws Exception {
-        this.stateConfigure = new MqttStateConfigure();
+        this.stateConfigure = MqttStateConfigure.getInstance(context.getInstanceName());
         this.stateConfigure.configure(context, false);
     }
 
