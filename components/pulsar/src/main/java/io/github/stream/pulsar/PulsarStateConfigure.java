@@ -3,6 +3,7 @@ package io.github.stream.pulsar;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
@@ -20,6 +21,8 @@ import lombok.Getter;
 public final class PulsarStateConfigure implements Configurable {
 
     private static final Map<String, PulsarStateConfigure> instances = new ConcurrentHashMap<>();
+
+    private final AtomicBoolean configured = new AtomicBoolean(false);
 
     private PulsarClient client;
 
@@ -50,6 +53,9 @@ public final class PulsarStateConfigure implements Configurable {
 
     @Override
     public void configure(ConfigContext context) throws IOException {
+        if (!configured.compareAndSet(false, true)) {
+            return;
+        }
         ClientBuilder builder = createPulsarClientBuilder(context);
         this.client = builder.build();
     }

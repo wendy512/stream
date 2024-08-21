@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,7 +38,9 @@ public final class RabbitMqStateConfigure implements Configurable {
 
     private static final Map<String, RabbitMqStateConfigure> instances = new ConcurrentHashMap<>();
 
-    private ConnectionFactory connectionFactory;
+    private final AtomicBoolean configured = new AtomicBoolean(false);
+
+    private Connection connection;
 
     private RabbitMqStateConfigure() {}
 
@@ -65,12 +68,16 @@ public final class RabbitMqStateConfigure implements Configurable {
     }
 
     @Override
-    public void configure(ConfigContext context) {
-        this.connectionFactory = createConnectionFactory(context);
+    public void configure(ConfigContext context) throws IOException, TimeoutException {
+        if (!configured.compareAndSet(false, true)) {
+            return;
+        }
+        ConnectionFactory factory = createConnectionFactory(context);
+        this.connection = factory.newConnection();
     }
 
-    public Connection newConnection() throws IOException, TimeoutException {
-        return connectionFactory.newConnection();
+    public Connection getConnection()  {
+        return this.connection;
     }
 
     private ConnectionFactory createConnectionFactory(ConfigContext context) {

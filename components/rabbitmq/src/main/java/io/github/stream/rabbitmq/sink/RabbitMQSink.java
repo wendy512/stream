@@ -58,9 +58,9 @@ public class RabbitMQSink extends AbstractSink<Object> {
     @Override
     public void configure(ConfigContext context) {
         this.stateConfigure = RabbitMqStateConfigure.getInstance(context.getInstanceName());
-        this.stateConfigure.configure(context);
         try {
-            this.connection = stateConfigure.newConnection();
+            this.stateConfigure.configure(context);
+            this.connection = stateConfigure.getConnection();
             this.channel = connection.createChannel();
         } catch (Exception e) {
             throw new StreamException(e);

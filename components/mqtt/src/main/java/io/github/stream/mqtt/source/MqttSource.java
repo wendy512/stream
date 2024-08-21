@@ -14,11 +14,13 @@
 package io.github.stream.mqtt.source;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.springframework.util.Assert;
 
 import io.github.stream.core.Message;
 import io.github.stream.core.StreamException;
@@ -39,16 +41,20 @@ public class MqttSource extends AbstractSource<String> {
 
     private MqttStateConfigure stateConfigure;
 
+    private String[] topics;
+
     @Override
     public void configure(ConfigContext context) throws Exception {
         this.stateConfigure = MqttStateConfigure.getInstance(context.getInstanceName());
-        stateConfigure.configure(context);
+        Object topicValue = context.getConfig().get(MqttStateConfigure.OPTIONS_TOPIC);
+        this.topics = resolveTopic(topicValue);
+        this.stateConfigure.configure(context);
     }
 
     @Override
     public void start() {
         // mqtt订阅
-        for (String topic : stateConfigure.getTopics()) {
+        for (String topic : topics) {
             try {
                 stateConfigure.getClient().subscribe(topic, stateConfigure.getQos(), new MqttMessageListener());
             } catch (MqttException e) {
@@ -62,12 +68,10 @@ public class MqttSource extends AbstractSource<String> {
     public void stop() {
         MqttClient client = stateConfigure.getClient();
         if (null != client && client.isConnected()) {
-            for (String topic : stateConfigure.getTopics()) {
-                try {
-                    client.unsubscribe(topic);
-                } catch (MqttException e) {
-                    throw new StreamException(e);
-                }
+            try {
+                client.unsubscribe(topics);
+            } catch (MqttException e) {
+                throw new StreamException(e);
             }
         }
         stateConfigure.stop();
@@ -87,4 +91,16 @@ public class MqttSource extends AbstractSource<String> {
             getChannelProcessor().send(message);
         }
     }
+    private String[] resolveTopic(Object topicValue) {
+        if (topicValue instanceof List) {
+            List<String> topicList = (List<String>) topicValue;
+            Assert.notEmpty(topicList, "MQTT topic cannot be empty");
+            return topicList.toArray(new String[topicList.size()]);
+        } else {
+            String topic = (String) topicValue;
+            Assert.hasText(topic, "MQTT topic cannot be empty");
+            return topic.split(",");
+        }
+    }
+
 }
