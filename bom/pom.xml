@@ -40,37 +40,37 @@
             <!-- stream -->
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-core</artifactId>
+                <artifactId>stream-core-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-mqtt</artifactId>
+                <artifactId>stream-mqtt-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-kafka</artifactId>
+                <artifactId>stream-kafka-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-rabbitmq</artifactId>
+                <artifactId>stream-rabbitmq-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-redis</artifactId>
+                <artifactId>stream-redis-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-pulsar</artifactId>
+                <artifactId>stream-pulsar-springboot3</artifactId>
                 <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-components</artifactId>
+                <artifactId>stream-components-springboot3</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
             </dependency>
