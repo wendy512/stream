@@ -47,10 +47,10 @@ public class RabbitMQSource extends AbstractSource {
     @Override
     public void configure(ConfigContext context) {
         this.stateConfigure = RabbitMqStateConfigure.getInstance(context.getInstanceName());
-        this.stateConfigure.configure(context);
         // 初始化连接
         try {
-            this.connection = this.stateConfigure.newConnection();
+            this.stateConfigure.configure(context);
+            this.connection = this.stateConfigure.getConnection();
         } catch (Exception e) {
             throw new StreamException(e);
         }

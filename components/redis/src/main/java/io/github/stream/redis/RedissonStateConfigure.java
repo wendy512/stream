@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
@@ -26,6 +27,8 @@ import io.github.stream.core.properties.BaseProperties;
 public final class RedissonStateConfigure implements Configurable {
 
     private static final Map<String, RedissonStateConfigure> instances = new ConcurrentHashMap<>();
+
+    private final AtomicBoolean configured = new AtomicBoolean(false);
 
     private RedissonClient client;
 
@@ -56,6 +59,10 @@ public final class RedissonStateConfigure implements Configurable {
 
     @Override
     public void configure(ConfigContext context) {
+        if (!configured.compareAndSet(false, true)) {
+            return;
+        }
+
         BaseProperties properties = context.getInstance();
         String mode = properties.getString("mode", Constants.MODE_SINGLE);
         String address = properties.getString("address");

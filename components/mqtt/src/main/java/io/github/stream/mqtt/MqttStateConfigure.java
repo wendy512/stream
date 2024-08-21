@@ -21,9 +21,9 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -68,9 +68,9 @@ public final class MqttStateConfigure implements Configurable {
 
     private static final Map<String, MqttStateConfigure> instances = new ConcurrentHashMap<>();
 
-    private MqttClient client;
+    private final AtomicBoolean configured = new AtomicBoolean(false);
 
-    private String[] topics;
+    private MqttClient client;
 
     private int qos;
 
@@ -101,10 +101,9 @@ public final class MqttStateConfigure implements Configurable {
 
     @Override
     public void configure(ConfigContext context) throws Exception {
-        this.configure(context, true);
-    }
-
-    public void configure(ConfigContext context, boolean resolveTopic) throws Exception {
+        if (!configured.compareAndSet(false, true)) {
+            return;
+        }
         BaseProperties properties = context.getInstance();
         MqttConnectOptions options = createOptions(properties);
 
@@ -113,17 +112,13 @@ public final class MqttStateConfigure implements Configurable {
             throw new IllegalArgumentException("MQTT host cannot be empty");
         }
 
-        if (resolveTopic) {
-            resolveTopic(context.getConfig().get(OPTIONS_TOPIC));
-        }
-
         String clientId = context.getConfig().getString(OPTIONS_CLIENT_ID);
         if (StringUtils.isBlank(clientId)) {
             clientId = UUID.fastUUID().toString(true);
         }
 
         int timeToWait = properties.getInt(OPTIONS_TIMETOWAIT, DEFAULT_TIMETOWAIT);
-        this.qos = properties.getInt(OPTIONS_QOS, 1);
+        this.qos = properties.getInt(OPTIONS_QOS, 0);
         log.info("Connect to mqtt server {}, client id {}", host, clientId);
         try {
             this.client = new MqttClient(host, clientId, new MemoryPersistence());
@@ -131,18 +126,6 @@ public final class MqttStateConfigure implements Configurable {
             this.client.connect(options);
         } catch (MqttException e) {
             throw new StreamException(e);
-        }
-    }
-
-    private void resolveTopic(Object topicValue) {
-        if (topicValue instanceof List) {
-            List<String> topicList = (List<String>) topicValue;
-            Assert.notEmpty(topicList, "MQTT topic cannot be empty");
-            this.topics = topicList.toArray(new String[topicList.size()]);
-        } else {
-            String topic = (String) topicValue;
-            Assert.hasText(topic, "MQTT topic cannot be empty");
-            this.topics = topic.split(",");
         }
     }
 
@@ -187,10 +170,6 @@ public final class MqttStateConfigure implements Configurable {
 
     public MqttClient getClient() {
         return client;
-    }
-
-    public String[] getTopics() {
-        return topics;
     }
 
     public int getQos() {
