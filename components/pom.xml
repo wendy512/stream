@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stream</artifactId>
+        <artifactId>stream-springboot3</artifactId>
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
@@ -20,7 +20,7 @@
         <module>pulsar</module>
     </modules>
 
-    <artifactId>stream-components</artifactId>
+    <artifactId>stream-components-springboot3</artifactId>
 
     <dependencies>
         <!-- test -->

@@ -13,10 +13,10 @@
 
 package io.github.stream.core;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -29,14 +29,14 @@ import io.github.stream.core.properties.CoreProperties;
 import io.github.stream.core.utils.SpringUtil;
 
 /**
- * springboot2 自动装配
+ * springboot3 自动装配
  * @author wendy512@yeah.net
  * @date 2023-05-22 14:08:22
  * @since 1.0.0
  */
+@AutoConfiguration
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @EnableConfigurationProperties(CoreProperties.class)
-@Configuration
 @Import({StreamBeanPostProcessor.class, SpringUtil.class})
 @ComponentScan("io.github.stream")
 public class StreamAutoConfiguration {

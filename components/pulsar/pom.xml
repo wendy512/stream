@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>stream-components</artifactId>
+        <artifactId>stream-components-springboot3</artifactId>
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
@@ -12,7 +12,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Stream pulsar component</name>
-    <artifactId>stream-pulsar</artifactId>
+    <artifactId>stream-pulsar-springboot3</artifactId>
 
 
     <dependencies>

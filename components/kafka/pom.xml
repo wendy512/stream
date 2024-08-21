@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>stream-components</artifactId>
+        <artifactId>stream-components-springboot3</artifactId>
         <groupId>io.github.wendy512</groupId>
         <version>${revision}</version>
     </parent>
@@ -11,7 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Stream kafka component</name>
-    <artifactId>stream-kafka</artifactId>
+    <artifactId>stream-kafka-springboot3</artifactId>
 
     <dependencies>
         <dependency>

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.wendy512</groupId>
-    <artifactId>stream-bom</artifactId>
+    <artifactId>stream-bom-springboot3</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
@@ -26,7 +26,7 @@
         <!-- logback -->
         <logback.version>1.2.11</logback.version>
         <!-- spring-boot -->
-        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
+        <spring-boot.version>3.2.2</spring-boot.version>
         <junit.version>4.13.1</junit.version>
         <org.eclipse.paho.client.mqttv3.version>1.2.0</org.eclipse.paho.client.mqttv3.version>
         <kafka.version>3.2.0</kafka.version>
@@ -73,22 +73,6 @@
                 <artifactId>stream-components</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
-            </dependency>
-            <!-- logback -->
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-access</artifactId>
-                <version>${logback.version}</version>
             </dependency>
             <!-- commons -->
             <dependency>

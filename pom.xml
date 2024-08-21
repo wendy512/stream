@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.wendy512</groupId>
-    <artifactId>stream</artifactId>
+    <artifactId>stream-springboot3</artifactId>
     <version>${revision}</version>
     <modules>
         <module>bom</module>
@@ -24,9 +24,9 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <maven.test.skip>true</maven.test.skip>
-        <java.version>1.8</java.version>
-        <source.java.version>1.8</source.java.version>
-        <target.java.version>1.8</target.java.version>
+        <java.version>17</java.version>
+        <source.java.version>17</source.java.version>
+        <target.java.version>17</target.java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <revision>1.0.3</revision>
         <lombok.version>1.18.20</lombok.version>
@@ -60,7 +60,7 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.wendy512</groupId>
-                <artifactId>stream-bom</artifactId>
+                <artifactId>stream-bom-springboot3</artifactId>
                 <version>${revision}</version>
                 <type>pom</type>
                 <scope>import</scope>
