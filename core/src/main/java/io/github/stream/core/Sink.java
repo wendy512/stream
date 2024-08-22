@@ -30,5 +30,5 @@ public interface Sink<T> extends LifecycleAware, Configurable {
 
     Set<Consumer<T>> getConsumers();
 
-    void process(List<Message<T>> messages);
+    void handle(List<Message<T>> messages);
 }

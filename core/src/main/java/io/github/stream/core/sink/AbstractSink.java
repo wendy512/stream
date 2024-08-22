@@ -13,6 +13,7 @@
 
 package io.github.stream.core.sink;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ import io.github.stream.core.Message;
 import io.github.stream.core.Sink;
 import io.github.stream.core.configuration.ConfigContext;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 抽象的
@@ -29,11 +31,25 @@ import io.github.stream.core.lifecycle.AbstractLifecycleAware;
  * @date 2023-05-19 10:24:06
  * @since 1.0.0
  */
+@Slf4j
 public abstract class AbstractSink<T> extends AbstractLifecycleAware implements Sink<T> {
 
     private Set<Consumer<T>> consumers = new LinkedHashSet<>();
 
     @Override
+    public void handle(List<Message<T>> messages) {
+        this.process(messages);
+        // consumer处理
+        Set<Consumer<T>> consumers = this.getConsumers();
+        for (Consumer<T> consumer : consumers) {
+            try {
+                consumer.accept(new ArrayList<>(messages));
+            } catch (Exception ex) {
+                log.error("Consumer " + consumer.getClass().getName() + " accept error", ex);
+            }
+        }
+    }
+
     public abstract void process(List<Message<T>> messages);
 
     @Override

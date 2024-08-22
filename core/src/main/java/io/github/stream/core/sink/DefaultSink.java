@@ -13,13 +13,10 @@
 
 package io.github.stream.core.sink;
 
-import io.github.stream.core.Consumer;
+import java.util.List;
+
 import io.github.stream.core.Message;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * 默认实现
@@ -32,13 +29,6 @@ public class DefaultSink<T> extends AbstractSink<T> {
 
     @Override
     public void process(List<Message<T>> messages) {
-        Set<Consumer<T>> consumers = getConsumers();
-        for (Consumer<T> consumer : consumers) {
-            try {
-                consumer.accept(new ArrayList<>(messages));
-            } catch (Exception ex) {
-                log.error("Consumer " + consumer.getClass().getName() + " accept error", ex);
-            }
-        }
+        // 默认不需要任何操作
     }
 }
