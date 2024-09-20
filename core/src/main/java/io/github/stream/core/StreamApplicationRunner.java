@@ -13,8 +13,8 @@
 
 package io.github.stream.core;
 
-import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import io.github.stream.core.configuration.MaterializedConfiguration;
+import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import lombok.extern.slf4j.Slf4j;
 
 

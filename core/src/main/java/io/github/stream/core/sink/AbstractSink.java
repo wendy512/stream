@@ -13,7 +13,7 @@
 
 package io.github.stream.core.sink;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +43,7 @@ public abstract class AbstractSink<T> extends AbstractLifecycleAware implements 
         Set<Consumer<T>> consumers = this.getConsumers();
         for (Consumer<T> consumer : consumers) {
             try {
-                consumer.accept(new ArrayList<>(messages));
+                consumer.accept(Collections.unmodifiableList(messages));
             } catch (Exception ex) {
                 log.error("Consumer " + consumer.getClass().getName() + " accept error", ex);
             }

@@ -79,9 +79,9 @@ public class SinkRunner<T> extends AbstractLifecycleAware {
         @Override
         public void runInternal() {
             while (isRunning()) {
-                int count = processor.process();
+                processor.process();
 
-                if (interval > 0 && count > 0) {
+                if (interval > 0) {
                     try {
                         Thread.sleep(interval);
                     } catch (InterruptedException ex) {
