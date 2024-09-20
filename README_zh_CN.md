@@ -6,14 +6,15 @@
 中文 | [English](README.md)
 
 ## 概述
-Stream异步消息高性能处理框架，类似go chan，多线程异步处理消息，支持批处理消息。
+Stream支持基于Spring的应用程序内的轻量级消息传递，并通过声明式适配器支持与外部系统的集成。这些适配器提供了比Spring对远程处理、消息传递和调度支持的更高级别的抽象。Stream的主要目标是提供一个简单的模型来构建企业集成解决方案，同时保持关注点分离，这对于生成可维护、可测试的代码至关重要。
+
+基于Stream的应用程序内的轻量级消息传递，这样的应用程序是通过组装细粒度的可重用组件来构建的，以形成更高级别的功能。通过精心设计，这些流程可以模块化，也可以在更高级别上重用。Stream还提供了多种通道适配器和网关供与外部系统通信。通道适配器用于单向集成（发送或接收），异步消息高性能处理框架，采用固定线程异步处理消息，支持批处理消息。
 
 ## 功能特性
-- 异步多线程（固定线程），支持指定线程数
-- 支持Kafka、MQTT、RabbitMQ消息源并支持拓展
-- 消息处理支持训和随机两种处理方式
-- 消息处理支持拦截器
-- 支持SpringBoot
+- 支持Kafka、MQTT、Redis、RabbitMQ、Pulsar消息源和目标并支持拓展
+- 消息源处理支持轮训和随机两种处理方式
+- 消息处理支持可拓展的拦截器
+- 支持SpringBoot2和SpringBoot3
 
 ## 需要
 编译需要 JDK 8 及以上、Maven 3.2.5 及以上。
@@ -26,7 +27,7 @@ Stream异步消息高性能处理框架，类似go chan，多线程异步处理�
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ``` 
 
@@ -36,7 +37,7 @@ jdk版本必须在17及以上
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core-springboot3</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ``` 
 

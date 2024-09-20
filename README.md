@@ -6,14 +6,14 @@
 English | [中文](README_zh_CN.md)
 
 ## Overview
-Stream asynchronous message high-performance processing framework, similar to go chan, multi-threaded asynchronous processing of messages, supports batch processing of messages.
+Stream supports lightweight messaging within Spring-based applications and supports integration with external systems through declarative adapters. These adapters provide a higher level of abstraction than Spring's support for remote processing, messaging, and scheduling. The main goal of Stream is to provide a simple model for building enterprise integration solutions while maintaining separation of concerns, which is essential for producing maintainable and testable code.
 
+Lightweight messaging within Stream-based applications, such applications are built by assembling fine-grained reusable components to form higher-level functions. Through careful design, these processes can be modularized and reused at a higher level. Stream also provides a variety of channel adapters and gateways for communicating with external systems. Channel adapters are used for one-way integration (send or receive), asynchronous message high-performance processing framework, fixed thread asynchronous processing of messages, and support for batch processing of messages.
 ## Features
-- Asynchronous multithreading (fixed thread), support for specifying the number of threads
-- Support Kafka, MQTT, RabbitMQ message source and support expansion
-- Message processing supports training and random processing
-- Message processing support interceptor
-- Support Spring Boot
+- Supports Kafka, MQTT, Redis, RabbitMQ, Pulsar message sources and targets and supports expansion
+- Message source processing supports two processing methods: round-robin and random
+- Message processing supports extensible interceptors
+- Support SpringBoot2 and SpringBoot3
 
 ## Requirements
 Compilation requires JDK 8 and above, Maven 3.2.5 and above.
@@ -26,7 +26,7 @@ If you use Maven, you just need to add the following dependency in pom.xml
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ``` 
 
@@ -36,7 +36,7 @@ The jdk version must be 17 or above
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core-springboot3</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ``` 
 
