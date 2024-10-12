@@ -10,6 +10,7 @@ Stream支持基于Spring的应用程序内的轻量级消息传递，并通过�
 
 基于Stream的应用程序内的轻量级消息传递，这样的应用程序是通过组装细粒度的可重用组件来构建的，以形成更高级别的功能。通过精心设计，这些流程可以模块化，也可以在更高级别上重用。Stream还提供了多种通道适配器和网关供与外部系统通信。通道适配器用于单向集成（发送或接收），异步消息高性能处理框架，采用固定线程异步处理消息，支持批处理消息。
 
+![flow](doc/_media/flow.jpg)
 ## 功能特性
 - 支持Kafka、MQTT、Redis、RabbitMQ、Pulsar消息源和目标并支持拓展
 - 消息源处理支持轮训和随机两种处理方式
@@ -31,6 +32,22 @@ Stream支持基于Spring的应用程序内的轻量级消息传递，并通过�
 </dependency>
 ``` 
 
+根据你的需要，添加对应的组件依赖，示例：mqtt组件
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-mqtt</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
+
+支持以下组件
+- stream-mqtt
+- stream-kafka
+- stream-pulsar
+- stream-rabbitmq
+- stream-redis
+
 ### Spring Boot3 版本
 jdk版本必须在17及以上
 ```xml  
@@ -40,6 +57,22 @@ jdk版本必须在17及以上
     <version>1.0.4</version>
 </dependency>
 ``` 
+
+根据你的需要，添加对应的组件依赖，示例：mqtt组件
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-mqtt-springboot3</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
+
+支持以下组件
+- stream-mqtt-springboot3
+- stream-kafka-springboot3
+- stream-pulsar-springboot3
+- stream-rabbitmq-springboot3
+- stream-redis-springboot3
 
 ## 如何使用
 
