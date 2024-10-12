@@ -9,6 +9,9 @@ on:
     branches:
       - master
       - springboot3
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 
 jobs:
   build:

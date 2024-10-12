@@ -10,7 +10,7 @@ Stream supports lightweight messaging within Spring-based applications and suppo
 
 Lightweight messaging within Stream-based applications, such applications are built by assembling fine-grained reusable components to form higher-level functions. Through careful design, these processes can be modularized and reused at a higher level. Stream also provides a variety of channel adapters and gateways for communicating with external systems. Channel adapters are used for one-way integration (send or receive), asynchronous message high-performance processing framework, fixed thread asynchronous processing of messages, and support for batch processing of messages.
 
-![flow](doc/_media/flow1.jpg)
+![flow](docs/_media/flow1.jpg)
 ## Features
 - Supports Kafka, MQTT, Redis, RabbitMQ, Pulsar message sources and sinks and supports expansion
 - Message source processing supports two processing methods: round-robin and random
