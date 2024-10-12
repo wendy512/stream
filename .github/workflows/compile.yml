@@ -5,13 +5,13 @@ on:
     branches:
       - master
       - springboot3
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
   pull_request:
     branches:
       - master
       - springboot3
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
 
 jobs:
   build:
