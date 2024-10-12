@@ -16,7 +16,9 @@
 
     <name>Stream project</name>
     <description>
-        Streaming processing framework, source, channel, sink, support mqtt, Kafka and other components
+        Stream supports lightweight messaging within Spring-based applications and supports integration with external systems through declarative adapters.
+        These adapters provide a higher level of abstraction than Spring's support for remote processing, messaging, and scheduling.
+        The main goal of Stream is to provide a simple model for building enterprise integration solutions while maintaining separation of concerns, which is essential for producing maintainable and testable code.
     </description>
     <url>https://github.com/wendy512/stream</url>
 
@@ -216,7 +218,8 @@
 
     <developers>
         <developer>
-            <name>wendy512@yeah.net</name>
+            <name>Jeff</name>
+            <email>wendy512@yeah.net</email>
             <url>https://github.com/wendy512</url>
             <timezone>+8</timezone>
             <roles>
