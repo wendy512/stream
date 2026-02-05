@@ -18,7 +18,7 @@ Lightweight messaging within Stream-based applications, such applications are bu
 - Support SpringBoot2 and SpringBoot3
 
 ## Requirements
-Compilation requires JDK 8 and above, Maven 3.2.5 and above.
+Compilation requires JDK 11 and above, Maven 3.2.5 and above.
 
 ## Integrated
 If you use Maven, you just need to add the following dependency in pom.xml
