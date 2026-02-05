@@ -18,7 +18,7 @@ Stream支持基于Spring的应用程序内的轻量级消息传递，并通过�
 - 支持SpringBoot2和SpringBoot3
 
 ## 需要
-编译需要 JDK 8 及以上、Maven 3.2.5 及以上。
+编译需要 JDK 11 及以上、Maven 3.2.5 及以上。
 
 ## 集成
 如果你使用 Maven，你只需要在 pom.xml 中添加下面的依赖：
