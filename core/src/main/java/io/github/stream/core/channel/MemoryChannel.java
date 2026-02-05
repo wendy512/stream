@@ -13,8 +13,10 @@
 
 package io.github.stream.core.channel;
 
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.List;
+
+import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.dsl.Disruptor;
 
 import io.github.stream.core.Message;
 
@@ -26,25 +28,22 @@ import io.github.stream.core.Message;
  */
 public class MemoryChannel<T> extends AbstractChannel<T> {
 
-    private final Queue<Message<T>> messageQueue;
-
-    public MemoryChannel(int capacity) {
-        super(capacity);
-        this.messageQueue = new LinkedBlockingQueue<>(capacity);
+    public MemoryChannel(int capacity, Disruptor<Message<T>> disruptor) {
+        super(capacity, disruptor);
     }
 
     @Override
     protected void doPut(Message<T> message) {
-        messageQueue.add(message);
+        RingBuffer<Message<T>> ringBuffer = disruptor.getRingBuffer();
+        long sequence = ringBuffer.next();
+        Message<T> eventMessage = ringBuffer.get(sequence);
+        eventMessage.setHeaders(message.getHeaders());
+        eventMessage.setPayload(message.getPayload());
+        ringBuffer.publish(sequence);
     }
 
     @Override
-    public Message<T> poll() {
-        return messageQueue.poll();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return messageQueue.isEmpty();
+    public void put(List<Message<T>> messages) {
+        messages.forEach(this::put);
     }
 }

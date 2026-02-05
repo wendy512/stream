@@ -13,10 +13,10 @@
 
 package io.github.stream.core.message;
 
-import io.github.stream.core.Message;
-
 import java.io.Serializable;
 import java.util.Map;
+
+import io.github.stream.core.Message;
 
 /**
  * 消息默认实现
@@ -28,9 +28,11 @@ public class GenericMessage<T> implements Message<T>, Serializable {
 
     private static final long serialVersionUID = -1047293681481507361L;
 
-    private final T payload;
+    private T payload;
 
-    private final MessageHeaders headers;
+    private MessageHeaders headers;
+
+    public GenericMessage() {}
 
     public GenericMessage(T payload) {
         this(payload, new MessageHeaders(null));
@@ -47,12 +49,23 @@ public class GenericMessage<T> implements Message<T>, Serializable {
         this.headers = headers;
     }
 
-    public T getPayload() {
+    @Override
+	public T getPayload() {
         return this.payload;
     }
 
-    public MessageHeaders getHeaders() {
+    @Override
+	public MessageHeaders getHeaders() {
         return this.headers;
     }
 
+    @Override
+    public void setPayload(T payload) {
+        this.payload = payload;
+    }
+
+    @Override
+    public void setHeaders(MessageHeaders headers) {
+        this.headers = headers;
+    }
 }

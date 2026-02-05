@@ -9,8 +9,10 @@ English | [中文](README_zh_CN.md)
 Stream supports lightweight messaging within Spring-based applications and supports integration with external systems through declarative adapters. These adapters provide a higher level of abstraction than Spring's support for remote processing, messaging, and scheduling. The main goal of Stream is to provide a simple model for building enterprise integration solutions while maintaining separation of concerns, which is essential for producing maintainable and testable code.
 
 Lightweight messaging within Stream-based applications, such applications are built by assembling fine-grained reusable components to form higher-level functions. Through careful design, these processes can be modularized and reused at a higher level. Stream also provides a variety of channel adapters and gateways for communicating with external systems. Channel adapters are used for one-way integration (send or receive), asynchronous message high-performance processing framework, fixed thread asynchronous processing of messages, and support for batch processing of messages.
+
+![flow](docs/_media/flow1.jpg)
 ## Features
-- Supports Kafka, MQTT, Redis, RabbitMQ, Pulsar message sources and targets and supports expansion
+- Supports Kafka, MQTT, Redis, RabbitMQ, Pulsar message sources and sinks and supports expansion
 - Message source processing supports two processing methods: round-robin and random
 - Message processing supports extensible interceptors
 - Support SpringBoot2 and SpringBoot3
@@ -29,6 +31,21 @@ If you use Maven, you just need to add the following dependency in pom.xml
     <version>1.0.4</version>
 </dependency>
 ``` 
+Add corresponding component dependencies according to your needs, example mqtt component
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-mqtt</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
+
+Supports the following components
+- stream-mqtt
+- stream-kafka
+- stream-pulsar
+- stream-rabbitmq
+- stream-redis
 
 ### Spring Boot3 version
 The jdk version must be 17 or above
@@ -39,6 +56,22 @@ The jdk version must be 17 or above
     <version>1.0.4</version>
 </dependency>
 ``` 
+
+Add corresponding component dependencies according to your needs, example mqtt component
+```xml  
+<dependency>
+    <groupId>io.github.wendy512</groupId>
+    <artifactId>stream-mqtt-springboot3</artifactId>
+    <version>1.0.4</version>
+</dependency>
+```
+
+Supports the following components
+- stream-mqtt-springboot3
+- stream-kafka-springboot3
+- stream-pulsar-springboot3
+- stream-rabbitmq-springboot3
+- stream-redis-springboot3
 
 ## How to use
 

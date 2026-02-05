@@ -14,7 +14,7 @@
     <url>https://github.com/wendy512/stream</url>
 
     <properties>
-        <revision>1.0.4</revision>
+        <revision>2.0.0</revision>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <central-publishing-maven-plugin.version>0.5.0</central-publishing-maven-plugin.version>
@@ -33,6 +33,7 @@
         <amqp-client.version>5.16.0</amqp-client.version>
         <redisson.version>3.16.6</redisson.version>
         <pulsar-client.version>2.11.0</pulsar-client.version>
+        <disruptor.version>4.0.0</disruptor.version>
     </properties>
 
     <dependencyManagement>
@@ -117,6 +118,11 @@
                 <groupId>org.apache.pulsar</groupId>
                 <artifactId>pulsar-client</artifactId>
                 <version>${pulsar-client.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
             </dependency>
             <!-- Test -->
             <dependency>

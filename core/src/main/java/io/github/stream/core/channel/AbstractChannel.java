@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.lmax.disruptor.dsl.Disruptor;
+
 import io.github.stream.core.Channel;
 import io.github.stream.core.Message;
 import io.github.stream.core.configuration.ConfigContext;
@@ -37,8 +39,11 @@ public abstract class AbstractChannel<T> extends AbstractLifecycleAware implemen
 
     protected final int capacity;
 
-    protected AbstractChannel(int capacity) {
+    protected final Disruptor<Message<T>> disruptor;
+
+    public AbstractChannel(int capacity, Disruptor<Message<T>> disruptor) {
         this.capacity = capacity;
+        this.disruptor = disruptor;
     }
 
     @Override

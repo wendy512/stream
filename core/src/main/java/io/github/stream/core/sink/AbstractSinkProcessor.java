@@ -13,13 +13,12 @@
 
 package io.github.stream.core.sink;
 
-import io.github.stream.core.Channel;
-import io.github.stream.core.Sink;
-import io.github.stream.core.lifecycle.AbstractLifecycleAware;
-import io.github.stream.core.SinkProcessor;
-
 import java.util.Collections;
 import java.util.List;
+
+import io.github.stream.core.Sink;
+import io.github.stream.core.SinkProcessor;
+import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 
 /**
  * 抽象输出处理者
@@ -31,13 +30,17 @@ public abstract class AbstractSinkProcessor<T> extends AbstractLifecycleAware im
 
     private List<Sink<T>> sinks = Collections.emptyList();
 
-    private Channel<T> channel;
-
     protected final int cacheSize;
 
-    protected AbstractSinkProcessor(int cacheSize) {
+    protected final long ordinal;        // 当前消费者的编号 (0, 1, 2...)
+
+    protected final long numberOfConsumers; // 消费者总数
+
+    protected AbstractSinkProcessor(int cacheSize, long ordinal, long numberOfConsumers) {
         this.cacheSize = cacheSize;
-    }
+		this.ordinal = ordinal;
+		this.numberOfConsumers = numberOfConsumers;
+	}
 
     @Override
     public void setSinks(List<Sink<T>> sinks) {
@@ -58,15 +61,5 @@ public abstract class AbstractSinkProcessor<T> extends AbstractLifecycleAware im
     public void stop() {
         sinks.forEach(Sink::stop);
         super.stop();
-    }
-
-    @Override
-    public void setChannel(Channel<T> channel) {
-        this.channel = channel;
-    }
-
-    @Override
-    public Channel<T> getChannel() {
-        return this.channel;
     }
 }

@@ -26,71 +26,21 @@ import lombok.extern.slf4j.Slf4j;
 public class SinkRunner<T> extends AbstractLifecycleAware {
 
     private final SinkProcessor<T> processor;
-    private final int interval;
-    private final String threadName;
 
-    private PollingRunner<T> runner;
-    private Thread runnerThread;
-
-    public SinkRunner(SinkProcessor<T> processor, int interval, String threadName) {
+    public SinkRunner(SinkProcessor<T> processor) {
         this.processor = processor;
-        this.interval = interval;
-        this.threadName = threadName;
     }
 
     @Override
     public void start() {
         processor.start();
-        runner = new PollingRunner<>(processor, interval);
-        runnerThread = new Thread(runner, threadName);
-        runnerThread.start();
         super.start();
     }
 
     @Override
     public void stop() {
-        if (runnerThread != null) {
-            runner.shutdown();
-
-            while (runnerThread.isAlive()) {
-                try {
-                    log.debug("Waiting for runner thread to exit");
-                    runnerThread.join(500);
-                } catch (InterruptedException e) {
-                    log.debug("Interrupted while waiting for runner thread to exit. Exception follows.",
-                            e);
-                }
-            }
-        }
         processor.stop();
         super.stop();
     }
 
-    public static class PollingRunner<T> extends AbstractAutoRunnable {
-
-        private final SinkProcessor<T> processor;
-        private final int interval;
-
-        public PollingRunner(SinkProcessor<T> processor, int interval) {
-            this.processor = processor;
-            this.interval = interval;
-        }
-
-        @Override
-        public void runInternal() {
-            while (isRunning()) {
-                processor.process();
-
-                if (interval > 0) {
-                    try {
-                        Thread.sleep(interval);
-                    } catch (InterruptedException ex) {
-                        // 有可能调用interrupt会触发sleep interrupted异常
-                        return;
-                    }
-                }
-            }
-
-        }
-    }
 }
