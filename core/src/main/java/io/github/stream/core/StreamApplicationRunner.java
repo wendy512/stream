@@ -31,7 +31,8 @@ public class StreamApplicationRunner extends AbstractLifecycleAware implements A
 
     @Override
     public void start() {
-        this.configuration.getChannels().forEach((name, channels) -> channels.forEach(Channel::start));
+        configuration.getDisruptor().start();
+        this.configuration.getChannels().forEach((name, channel) -> channel.start());
         this.configuration.getSinkRunners().forEach((name, runners) -> runners.forEach(SinkRunner::start));
         this.configuration.getSources().values().forEach(Source::start);
         super.start();
@@ -39,6 +40,7 @@ public class StreamApplicationRunner extends AbstractLifecycleAware implements A
 
     @Override
     public void stop() {
+        configuration.getDisruptor().shutdown();
         configuration.getSources().forEach((name, source) -> {
             source.stop();
             log.info("Source {} stopping", name);
@@ -49,9 +51,9 @@ public class StreamApplicationRunner extends AbstractLifecycleAware implements A
             runners.forEach(SinkRunner::stop);
         });
 
-        configuration.getChannels().forEach((name, channels) -> {
+        configuration.getChannels().forEach((name, channel) -> {
             log.info("Channel {} stopping", name);
-            channels.forEach(Channel::stop);
+            channel.stop();
         });
         super.stop();
     }

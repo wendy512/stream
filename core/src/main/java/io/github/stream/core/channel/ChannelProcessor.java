@@ -13,10 +13,10 @@
 
 package io.github.stream.core.channel;
 
-import io.github.stream.core.ChannelSelector;
-import io.github.stream.core.Message;
-
 import java.util.List;
+
+import io.github.stream.core.Channel;
+import io.github.stream.core.Message;
 
 /**
  * channel 处理者
@@ -26,17 +26,17 @@ import java.util.List;
  */
 public class ChannelProcessor<T> {
 
-    private final ChannelSelector<T> selector;
+    private final Channel<T> channel;
 
-    public ChannelProcessor(ChannelSelector<T> selector) {
-        this.selector = selector;
+    public ChannelProcessor(Channel<T> channel) {
+        this.channel = channel;
     }
 
     public void send(Message<T> message) {
-        selector.getChannel().put(message);
+        channel.put(message);
     }
 
     public void send(List<Message<T>> messages) {
-        messages.forEach(selector.getChannel()::put);
+        channel.put(messages);
     }
 }

@@ -27,24 +27,15 @@ import io.github.stream.core.Sink;
  */
 public class DefaultSinkProcessor<T> extends AbstractSinkProcessor<T> {
 
-    public DefaultSinkProcessor(int cacheSize) {
-        super(cacheSize);
+    private final List<Message<T>> caches;
+
+    public DefaultSinkProcessor(int cacheSize, long ordinal, long numberOfConsumers) {
+        super(cacheSize, ordinal, numberOfConsumers);
+        this.caches = new ArrayList<>(cacheSize);
     }
 
     @Override
     public int process() {
-        int i = 0;
-        final List<Message<T>> caches = new ArrayList<>();
-
-        // 尝试着一次从队列中获取尽量多的元素且不超过cacheSize
-        while (++i <= cacheSize) {
-            Message<T> e = getChannel().poll();
-            if (null == e) {
-                break;
-            }
-            caches.add(e);
-        }
-
         if (!caches.isEmpty()) {
             List<Sink<T>> sinks = getSinks();
             for (Sink<T> sink : sinks) {
@@ -52,5 +43,18 @@ public class DefaultSinkProcessor<T> extends AbstractSinkProcessor<T> {
             }
         }
         return caches.size();
+    }
+
+    @Override
+    public void onEvent(Message<T> event, long sequence, boolean endOfBatch) throws Exception {
+        // 【核心逻辑】只处理属于自己的序列号
+        if (sequence % numberOfConsumers == ordinal) {
+            caches.add(event);
+        }
+
+        if (caches.size() >= cacheSize || endOfBatch) {
+            process();
+            caches.clear();
+        }
     }
 }

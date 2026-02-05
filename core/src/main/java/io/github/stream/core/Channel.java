@@ -13,6 +13,8 @@
 
 package io.github.stream.core;
 
+import java.util.List;
+
 import io.github.stream.core.lifecycle.LifecycleAware;
 
 /**
@@ -31,14 +33,9 @@ public interface Channel<T> extends LifecycleAware, Configurable {
     void put(Message<T> message);
 
     /**
-     * 获取消息，没有消息返回null
+     * 批量发送消息
+     * @param messages
      * @return
      */
-    Message<T> poll();
-
-    /**
-     * 通道中数据是否为空
-     * @return
-     */
-    boolean isEmpty();
+    void put(List<Message<T>> messages);
 }

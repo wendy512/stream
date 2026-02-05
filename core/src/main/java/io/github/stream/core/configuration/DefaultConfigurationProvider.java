@@ -16,16 +16,20 @@ package io.github.stream.core.configuration;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.util.Util;
 
 import io.github.stream.core.*;
 import io.github.stream.core.channel.ChannelProcessor;
 import io.github.stream.core.channel.ChannelType;
-import io.github.stream.core.channel.LoadBalancingChannelSelector;
+import io.github.stream.core.message.GenericMessage;
 import io.github.stream.core.properties.*;
 import io.github.stream.core.sink.DefaultSinkProcessor;
 import io.github.stream.core.sink.SinkType;
@@ -69,6 +73,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return configuration;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void loadSource(CoreProperties coreProperties, MaterializedConfiguration configuration) {
         Map<String, SourceProperties> sourceMap = coreProperties.getSource();
         if (null == sourceMap) {
@@ -86,20 +91,17 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 throw new StreamException("Source '" + name + "' type value no match");
             }
 
-            ChannelSelector channelSelector =
-                new LoadBalancingChannelSelector(LoadBalancingChannelSelector.Policy.ROUND_ROBIN);
-            String channel = properties.getChannel();
-            if (StringUtils.isBlank(channel)) {
-                throw new StreamException("Source '" + name + "' channel cannot be empty ");
+            String channelName = properties.getChannel();
+            if (StringUtils.isBlank(channelName)) {
+                throw new StreamException("Source '" + name + "' channelName cannot be empty ");
             }
 
-            List<Channel> channels = configuration.getChannels().get(channel);
-            if (null == channels) {
-                throw new StreamException("Source '" + name + "' not found channel " + channel);
+            Channel channel = configuration.getChannels().get(channelName);
+            if (null == channel) {
+                throw new StreamException("Source '" + name + "' not found channelName " + channelName);
             }
-            channelSelector.addChannel(channels);
-            ChannelProcessor channelProcessor = new ChannelProcessor(channelSelector);
-            configuration.addChannelProcessor(channel, channelProcessor);
+            ChannelProcessor channelProcessor = new ChannelProcessor(channel);
+            configuration.addChannelProcessor(channelName, channelProcessor);
             // 获取instance配置
             BaseProperties instanceProperties = getInstanceProperties(coreProperties, properties.getInstance());
 
@@ -116,6 +118,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void loadSinkAndChannel(MaterializedConfiguration configuration, CoreProperties coreProperties) {
         Map<String, ChannelProperties> channelMap = coreProperties.getChannel();
         Map<String, SinkProperties> sinkMap = coreProperties.getSink();
@@ -157,22 +160,38 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             }
             configuration.addSink(name, sink);
 
-            for (int i = 1; i <= properties.getThreads(); i++) {
-                SinkProcessor sinkProcessor = new DefaultSinkProcessor(properties.getCacheSize());
-
-                try {
-                    Constructor<?> channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class);
-                    Channel channel = (Channel)channelConstructor.newInstance(channelProperties.getCapacity());
-                    sinkProcessor.setChannel(channel);
-                    sinkProcessor.setSinks(Arrays.asList(sink));
-                    configuration.addChannel(channelName, channel);
-                } catch (Exception e) {
-                    throw new StreamException(e);
+            int bufferSize = Util.ceilingNextPowerOfTwo(properties.getCacheSize());
+            ThreadFactory namedThreadFactory = new ThreadFactory() {
+                private final AtomicInteger counter = new AtomicInteger(1);
+                @Override
+                public Thread newThread(Runnable r) {
+                    // 在这里设置线程名称
+                    return new Thread(r, "sink-runner-" + counter.getAndIncrement());
                 }
+            };
+            Disruptor<Message> disruptor = new Disruptor<>(GenericMessage::new, bufferSize, namedThreadFactory);
+            SinkProcessor[] processors = new SinkProcessor[properties.getThreads()];
 
-                SinkRunner sinkRunner = new SinkRunner(sinkProcessor, properties.getInterval(), "sink-runner-" + i);
+            // 创建channel
+            try {
+                Constructor<?> channelConstructor = Class.forName(channelClassName.getClassName()).getConstructor(int.class, Disruptor.class);
+                Channel channel = (Channel)channelConstructor.newInstance(channelProperties.getCapacity(), disruptor);
+                configuration.addChannel(channelName, channel);
+            } catch (Exception e) {
+                throw new StreamException(e);
+            }
+
+            for (int i = 0; i < properties.getThreads(); i++) {
+                SinkProcessor sinkProcessor = new DefaultSinkProcessor(properties.getCacheSize(), i, properties.getThreads());
+                processors[i] = sinkProcessor;
+
+                sinkProcessor.setSinks(Arrays.asList(sink));
+                SinkRunner sinkRunner = new SinkRunner(sinkProcessor);
                 configuration.addSinkRunner(name, sinkRunner);
             }
+
+            disruptor.handleEventsWith(processors);
+            configuration.setDisruptor(disruptor);
         }
     }
 

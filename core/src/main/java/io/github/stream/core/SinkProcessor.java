@@ -13,9 +13,11 @@
 
 package io.github.stream.core;
 
-import io.github.stream.core.lifecycle.LifecycleAware;
-
 import java.util.List;
+
+import com.lmax.disruptor.EventHandler;
+
+import io.github.stream.core.lifecycle.LifecycleAware;
 
 
 /**
@@ -24,12 +26,8 @@ import java.util.List;
  * @date 2023-05-19 10:00:45
  * @since 1.0.0
  */
-public interface SinkProcessor<T> extends LifecycleAware {
+public interface SinkProcessor<T> extends LifecycleAware, EventHandler<Message<T>> {
     int process();
 
     void setSinks(List<Sink<T>> sinks);
-
-    void setChannel(Channel<T> channel);
-
-    Channel<T> getChannel();
 }

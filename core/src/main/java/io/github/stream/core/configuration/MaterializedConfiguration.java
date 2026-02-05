@@ -16,10 +16,9 @@ package io.github.stream.core.configuration;
 import java.util.List;
 import java.util.Map;
 
-import io.github.stream.core.Channel;
-import io.github.stream.core.Sink;
-import io.github.stream.core.SinkRunner;
-import io.github.stream.core.Source;
+import com.lmax.disruptor.dsl.Disruptor;
+
+import io.github.stream.core.*;
 import io.github.stream.core.channel.ChannelProcessor;
 
 /**
@@ -45,7 +44,11 @@ public interface MaterializedConfiguration {
 
     Map<String, List<Sink>> getSinks();
 
-    Map<String, List<Channel>> getChannels();
+    Map<String, Channel> getChannels();
 
     Map<String, ChannelProcessor> getChannelProcessors();
+
+    void setDisruptor(Disruptor<Message> disruptor);
+
+    Disruptor<Message> getDisruptor();
 }

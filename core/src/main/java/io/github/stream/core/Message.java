@@ -34,4 +34,16 @@ public interface Message<T> {
      * @return
      */
     MessageHeaders getHeaders();
+
+    /**
+     * 设置消息内容
+     * @param payload
+     */
+    void setPayload(T payload);
+
+    /**
+     * 设置消息头
+     * @param headers
+     */
+    void setHeaders(MessageHeaders headers);
 }

@@ -17,12 +17,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import io.github.stream.core.Channel;
-import io.github.stream.core.Sink;
-import io.github.stream.core.SinkRunner;
-import io.github.stream.core.Source;
+import com.lmax.disruptor.dsl.Disruptor;
+
+import io.github.stream.core.*;
 import io.github.stream.core.channel.ChannelProcessor;
 
 /**
@@ -33,10 +31,11 @@ import io.github.stream.core.channel.ChannelProcessor;
 public class SimpleMaterializedConfiguration implements MaterializedConfiguration {
 
     private final Map<String, Source> sources = new HashMap<>();
-    private final Map<String, List<SinkRunner>> sinkRunners = new ConcurrentHashMap<>();
-    private final Map<String, List<Sink>> sinks = new ConcurrentHashMap<>();
-    private final Map<String, List<Channel>> channels = new ConcurrentHashMap<>();
-    private final Map<String, ChannelProcessor> channelProcessors = new ConcurrentHashMap<>();
+    private final Map<String, List<SinkRunner>> sinkRunners = new HashMap<>();
+    private final Map<String, List<Sink>> sinks = new HashMap<>();
+    private final Map<String, Channel> channels = new HashMap<>();
+    private final Map<String, ChannelProcessor> channelProcessors = new HashMap<>();
+    private Disruptor<Message> disruptor;
 
     @Override
     public void addSource(String name, Source source) {
@@ -57,8 +56,7 @@ public class SimpleMaterializedConfiguration implements MaterializedConfiguratio
 
     @Override
     public void addChannel(String name, Channel channel) {
-        channels.computeIfAbsent(name, k -> new ArrayList<>());
-        channels.get(name).add(channel);
+        channels.put(name, channel);
     }
 
     @Override
@@ -82,12 +80,22 @@ public class SimpleMaterializedConfiguration implements MaterializedConfiguratio
     }
 
     @Override
-    public Map<String, List<Channel>> getChannels() {
+    public Map<String, Channel> getChannels() {
         return channels;
     }
 
     @Override
     public Map<String, ChannelProcessor> getChannelProcessors() {
         return channelProcessors;
+    }
+
+    @Override
+    public void setDisruptor(Disruptor<Message> disruptor) {
+        this.disruptor = disruptor;
+    }
+
+    @Override
+    public Disruptor<Message> getDisruptor() {
+        return disruptor;
     }
 }
