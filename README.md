@@ -28,7 +28,7 @@ If you use Maven, you just need to add the following dependency in pom.xml
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ``` 
 Add corresponding component dependencies according to your needs, example mqtt component
@@ -36,7 +36,7 @@ Add corresponding component dependencies according to your needs, example mqtt c
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-mqtt</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -53,7 +53,7 @@ The jdk version must be 17 or above
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core-springboot3</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ``` 
 
@@ -62,7 +62,7 @@ Add corresponding component dependencies according to your needs, example mqtt c
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-mqtt-springboot3</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 

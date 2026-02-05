@@ -28,7 +28,7 @@ Stream支持基于Spring的应用程序内的轻量级消息传递，并通过�
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ``` 
 
@@ -37,7 +37,7 @@ Stream支持基于Spring的应用程序内的轻量级消息传递，并通过�
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-mqtt</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -54,7 +54,7 @@ jdk版本必须在17及以上
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-core-springboot3</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ``` 
 
@@ -63,7 +63,7 @@ jdk版本必须在17及以上
 <dependency>
     <groupId>io.github.wendy512</groupId>
     <artifactId>stream-mqtt-springboot3</artifactId>
-    <version>1.0.4</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
