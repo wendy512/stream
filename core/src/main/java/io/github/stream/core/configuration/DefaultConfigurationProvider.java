@@ -23,7 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.lmax.disruptor.LiteBlockingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 import com.lmax.disruptor.util.Util;
 
 import io.github.stream.core.*;
@@ -166,10 +168,12 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
                 @Override
                 public Thread newThread(Runnable r) {
                     // 在这里设置线程名称
-                    return new Thread(r, "sink-runner-" + counter.getAndIncrement());
+                    return new Thread(r, "sink-" + name + "-runner-" + counter.getAndIncrement());
                 }
             };
-            Disruptor<Message> disruptor = new Disruptor<>(GenericMessage::new, bufferSize, namedThreadFactory);
+
+            Disruptor<Message> disruptor = new Disruptor<>(GenericMessage::new, bufferSize, namedThreadFactory,
+                ProducerType.MULTI, new LiteBlockingWaitStrategy());
             SinkProcessor[] processors = new SinkProcessor[properties.getThreads()];
 
             // 创建channel
@@ -191,7 +195,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
             }
 
             disruptor.handleEventsWith(processors);
-            configuration.setDisruptor(disruptor);
+            configuration.addDisruptor(disruptor);
         }
     }
 

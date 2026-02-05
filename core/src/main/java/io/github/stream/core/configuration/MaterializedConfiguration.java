@@ -48,7 +48,7 @@ public interface MaterializedConfiguration {
 
     Map<String, ChannelProcessor> getChannelProcessors();
 
-    void setDisruptor(Disruptor<Message> disruptor);
+    void addDisruptor(Disruptor<Message> disruptor);
 
-    Disruptor<Message> getDisruptor();
+    List<Disruptor<Message>> getDisruptors();
 }

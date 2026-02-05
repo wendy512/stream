@@ -13,6 +13,8 @@
 
 package io.github.stream.core;
 
+import com.lmax.disruptor.dsl.Disruptor;
+
 import io.github.stream.core.configuration.MaterializedConfiguration;
 import io.github.stream.core.lifecycle.AbstractLifecycleAware;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +33,7 @@ public class StreamApplicationRunner extends AbstractLifecycleAware implements A
 
     @Override
     public void start() {
-        configuration.getDisruptor().start();
+        configuration.getDisruptors().forEach(Disruptor::start);
         this.configuration.getChannels().forEach((name, channel) -> channel.start());
         this.configuration.getSinkRunners().forEach((name, runners) -> runners.forEach(SinkRunner::start));
         this.configuration.getSources().values().forEach(Source::start);
@@ -40,7 +42,7 @@ public class StreamApplicationRunner extends AbstractLifecycleAware implements A
 
     @Override
     public void stop() {
-        configuration.getDisruptor().shutdown();
+        configuration.getDisruptors().forEach(Disruptor::shutdown);
         configuration.getSources().forEach((name, source) -> {
             source.stop();
             log.info("Source {} stopping", name);

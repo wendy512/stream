@@ -35,7 +35,7 @@ public class SimpleMaterializedConfiguration implements MaterializedConfiguratio
     private final Map<String, List<Sink>> sinks = new HashMap<>();
     private final Map<String, Channel> channels = new HashMap<>();
     private final Map<String, ChannelProcessor> channelProcessors = new HashMap<>();
-    private Disruptor<Message> disruptor;
+    private List<Disruptor<Message>> disruptors = new ArrayList<>();
 
     @Override
     public void addSource(String name, Source source) {
@@ -90,12 +90,12 @@ public class SimpleMaterializedConfiguration implements MaterializedConfiguratio
     }
 
     @Override
-    public void setDisruptor(Disruptor<Message> disruptor) {
-        this.disruptor = disruptor;
+    public void addDisruptor(Disruptor<Message> disruptor) {
+        this.disruptors.add(disruptor);
     }
 
     @Override
-    public Disruptor<Message> getDisruptor() {
-        return disruptor;
+    public List<Disruptor<Message>> getDisruptors() {
+        return disruptors;
     }
 }
